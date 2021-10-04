@@ -1,0 +1,37 @@
+{
+  "defaultSeverity": "error",
+  "extends": "tslint:recommended",
+  "rules": {
+      "max-line-length": {
+          "options": [120]
+      },
+      "new-parens": true,
+      "no-arg": true,
+      "no-conditional-assignment": true,
+      "no-consecutive-blank-lines": false,
+      "no-console": {
+          "severity": "warning",
+          "options": [
+              "debug",
+              "info",
+              "log",
+              "time",
+              "timeEnd",
+              "trace"
+          ]
+      },
+      "trailing-comma": [true, {
+        "multiline": "never",
+        "singleline": "never"
+      }],
+      "quotemark": [true, "single", "jsx-single"],
+      "object-literal-sort-keys": false,
+      "max-classes-per-file": false,
+      "interface-name": [true, "never-prefix"],
+      "no-shadowed-variable": false,
+      "no-bitwise": false,
+      "no-var-requires": false,
+      "cyclomatic-complexity": [true, 15],
+      "strict-type-predicates": true
+  }
+}
