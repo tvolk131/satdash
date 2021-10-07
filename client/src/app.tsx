@@ -1,17 +1,20 @@
-import {blue, teal} from '@material-ui/core/colors';
+import {blue, teal} from '@mui/material/colors';
 import {
   createTheme,
-  MuiThemeProvider,
-  makeStyles,
-  createStyles,
+  ThemeProvider,
   Theme
-} from '@material-ui/core/styles';
+} from '@mui/material/styles';
+import {
+  makeStyles
+} from '@mui/styles';
 import * as React from 'react';
 import {useState} from 'react';
-import {Snackbar} from '@material-ui/core';
+import {Snackbar, Box, Grid} from '@mui/material';
+import {BlankWidget} from './blankWidget';
+import {TotalSupplyPieChartWidget} from './totalSupplyPieChartWidget';
 
 const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+  ({
     root: {
       backgroundColor: theme.palette.background.default,
       minHeight: '100vh'
@@ -30,13 +33,32 @@ const SubApp = () => {
     setSnackbarMessage(message);
   };
 
+  const widgets = [
+    <TotalSupplyPieChartWidget/>,
+    <TotalSupplyPieChartWidget/>,
+    <TotalSupplyPieChartWidget/>,
+    <TotalSupplyPieChartWidget/>,
+    <TotalSupplyPieChartWidget/>,
+    <BlankWidget/>
+  ];
+
   return (
     <div className={classes.root}>
       {/* This meta tag makes the mobile experience
       much better by preventing text from being tiny. */}
       <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
       <div>
-        Sat Dash
+        <div>
+          <Box sx={{flexGrow: 1}} style={{maxWidth: '1500px', margin: 'auto', padding: '20px'}}>
+            <Grid container spacing={2} justifyContent={'center'}>
+              {widgets.map((widget, index) => (
+                <Grid item key={index}>
+                  {widget}
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </div>
       </div>
       <Snackbar
         anchorOrigin={{
@@ -63,22 +85,14 @@ const ThemedSubApp = () => {
     palette: {
       primary: blue,
       secondary: teal,
-      type: isDarkMode ? 'dark' : 'light'
-    },
-    props: {
-      MuiAppBar: {
-        color: isDarkMode ? 'default' : 'primary'
-      },
-      MuiTypography: {
-        color: 'textPrimary'
-      }
+      mode: isDarkMode ? 'dark' : 'light'
     }
   });
 
   return (
-    <MuiThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <SubApp/>
-    </MuiThemeProvider>
+    </ThemeProvider>
   );
 };
 
