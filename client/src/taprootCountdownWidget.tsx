@@ -38,20 +38,15 @@ export const TaprootCountdownWidget = (props: TaprootCountdownWidgetProps) => {
   const blocksUntilTaproot = taprootBlockHeight - props.blockHeight;
   const taprootHasActivated = blocksUntilTaproot <= 0;
 
-  if (taprootHasActivated) {
-  }
-
   return (
     <div style={{padding: '10px'}}>
       <Paper style={{height: '400px', width: '400px'}}>
         {taprootHasActivated ? (
+          <Typography variant={'h5'} style={{padding: '10px', textAlign: 'center'}}>Taproot has activated!</Typography>
+        ) : (
           <div>
             <Typography variant={'h5'} style={{padding: '10px', textAlign: 'center'}}>Taproot will activate in {taprootBlockHeight - props.blockHeight} blocks</Typography>
             <Typography style={{padding: '10px', textAlign: 'center'}}>Approximately {getDurationEstimateFromBlockCount(blocksUntilTaproot)}</Typography>
-          </div>
-        ) : (
-          <div>
-            <Typography variant={'h5'} style={{padding: '10px', textAlign: 'center'}}>Taproot has activated!</Typography>
           </div>
         )}
       </Paper>
