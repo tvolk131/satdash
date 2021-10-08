@@ -2,8 +2,8 @@ import {blue, teal} from '@mui/material/colors';
 import {createTheme, ThemeProvider, Theme} from '@mui/material/styles';
 import {makeStyles} from '@mui/styles';
 import * as React from 'react';
-import {useState, useEffect} from 'react';
-import {Snackbar, Box, Grid} from '@mui/material';
+import {useState, useEffect, useCallback} from 'react';
+import {Snackbar, Box, Grid, Typography, Paper} from '@mui/material';
 import {TotalSupplyPieChartWidget} from './widgets/totalSupplyPieChartWidget';
 import {TaprootCountdownWidget} from './widgets/taprootCountdownWidget';
 import {BlockHeightWidget} from './widgets/blockHeightWidget';
@@ -32,14 +32,36 @@ const SubApp = () => {
   const [pricePerCoin, setPricePerCoin] = useState<number | null | undefined>(undefined);
   const [blockHeight, setBlockHeight] = useState<number | null | undefined>(undefined);
 
-  useEffect(() => {
-    getBitcoinPrice()
-      .then((pricePerCoin) => setPricePerCoin(pricePerCoin))
-      .catch(() => setPricePerCoin(null));
+  const [lastUpdated, setLastUpdated] = useState(Date.now());
 
-    getBitcoinBlockHeight()
-      .then((blockHeight) => setBlockHeight(blockHeight))
-      .catch(() => setBlockHeight(null));
+  // Used to force-update the component. The state itself isn't used for anything.
+  const [, updateState] = useState<any>();
+  const forceUpdate = useCallback(() => updateState({}), []);
+
+  useEffect(() => {
+    const loadData = () => {
+      const pricePromise = getBitcoinPrice()
+        .then((pricePerCoin) => setPricePerCoin(pricePerCoin))
+        .catch(() => setPricePerCoin(null));
+  
+      const blockHeightPromise = getBitcoinBlockHeight()
+        .then((blockHeight) => setBlockHeight(blockHeight))
+        .catch(() => setBlockHeight(null));
+
+      Promise.all([pricePromise, blockHeightPromise])
+        .then(() => setLastUpdated(Date.now()));
+    };
+    const intervalId = setInterval(loadData, 30000);
+    loadData();
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // Used to force update the component.
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      forceUpdate();
+    }, 200);
+    return () => clearInterval(intervalId);
   }, []);
 
   const showSnackbarMessage = (message: string) => {
@@ -134,6 +156,9 @@ const SubApp = () => {
           </Box>
         </div>
       </div>
+      <Paper style={{position: 'absolute', bottom: 0, right: 0, margin: '20px'}}>
+        <Typography variant={'h5'} style={{padding: '10px'}}>Last updated {Math.floor((Date.now() - lastUpdated) / 1000)} seconds ago</Typography>
+      </Paper>
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',
