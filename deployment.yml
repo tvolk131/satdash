@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: satdash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: satdash
+  template:
+    metadata:
+      labels:
+        app: satdash
+    spec:
+      containers:
+      - name: satdash
+        image: <IMAGE>
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: satdash-service
+  annotations:
+    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "f642d427-c299-4314-bde6-83b9d824f0ea"
+    service.beta.kubernetes.io/do-loadbalancer-hostname: "satda.sh"
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
+    service.beta.kubernetes.io/do-loadbalancer-tls-ports: "443"
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 80
+  selector:
+    app: satdash

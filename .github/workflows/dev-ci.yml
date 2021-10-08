@@ -1,0 +1,34 @@
+name: Dev CI
+
+on:
+  push:
+    branches:
+      - '**' # Matches every branch.
+      - '!master' # Excludes master.
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Node.js Setup
+        uses: actions/setup-node@v1
+        with:
+          node-version: '15.x'
+      - name: Build
+        run: |
+          rustup default nightly
+          cd client
+          npm ci
+          npm run check-typescript-types
+          npm run lint
+          npm test
+          npm run build-prod
+          cd ../server
+          rustup component add rustfmt
+          rustup component add clippy
+          cargo fmt -- --check
+          cargo clippy --all-targets --all-features -- -D warnings
+          cargo test

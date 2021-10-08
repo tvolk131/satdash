@@ -43,7 +43,7 @@ const SubApp = () => {
       const pricePromise = getBitcoinPrice()
         .then((pricePerCoin) => setPricePerCoin(pricePerCoin))
         .catch(() => setPricePerCoin(null));
-  
+
       const blockHeightPromise = getBitcoinBlockHeight()
         .then((blockHeight) => setBlockHeight(blockHeight))
         .catch(() => setBlockHeight(null));
@@ -157,7 +157,12 @@ const SubApp = () => {
         </div>
       </div>
       <Paper style={{position: 'absolute', bottom: 0, right: 0, margin: '20px'}}>
-        <Typography variant={'h5'} style={{padding: '10px'}}>Last updated {Math.floor((Date.now() - lastUpdated) / 1000)} seconds ago</Typography>
+        <Typography
+          variant={'h5'}
+          style={{padding: '10px'}}
+        >
+          Last updated {Math.floor((Date.now() - lastUpdated) / 1000)} seconds ago
+        </Typography>
       </Paper>
       <Snackbar
         anchorOrigin={{
