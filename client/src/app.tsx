@@ -1,12 +1,6 @@
 import {blue, teal} from '@mui/material/colors';
-import {
-  createTheme,
-  ThemeProvider,
-  Theme
-} from '@mui/material/styles';
-import {
-  makeStyles
-} from '@mui/styles';
+import {createTheme, ThemeProvider, Theme} from '@mui/material/styles';
+import {makeStyles} from '@mui/styles';
 import * as React from 'react';
 import {useState} from 'react';
 import {Snackbar, Box, Grid} from '@mui/material';
@@ -15,6 +9,7 @@ import {TotalSupplyPieChartWidget} from './totalSupplyPieChartWidget';
 import {TaprootCountdownWidget} from './taprootCountdownWidget';
 import {BlockHeightWidget} from './blockHeightWidget';
 import {PriceWidget} from './priceWidget';
+import {SatsPerDollarWidget} from './satsPerDollarWidget';
 
 const blockHeight = 704041;
 const pricePerCoin = 54695;
@@ -44,7 +39,7 @@ const SubApp = () => {
     <TaprootCountdownWidget blockHeight={blockHeight}/>,
     <BlockHeightWidget blockHeight={blockHeight}/>,
     <PriceWidget pricePerCoin={pricePerCoin}/>,
-    <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
+    <SatsPerDollarWidget pricePerCoin={pricePerCoin}/>,
     <BlankWidget/>
   ];
 
