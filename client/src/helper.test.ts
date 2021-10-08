@@ -61,6 +61,8 @@ describe('formatNumber', () => {
     expect(formatNumber(1234567, 'fullNumberWithCommas')).toEqual('1,234,567');
     expect(formatNumber(12345678, 'fullNumberWithCommas')).toEqual('12,345,678');
     expect(formatNumber(123456789, 'fullNumberWithCommas')).toEqual('123,456,789');
+  
+    expect(formatNumber(123456.789, 'fullNumberWithCommas')).toEqual('123,456.789');
   });
 
   it('returns proper number with word', () => {

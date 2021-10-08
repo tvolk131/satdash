@@ -43,7 +43,9 @@ export const truncateNumber = (num: number, digits: number): number => {
 
 export const formatNumber = (num: number, format: 'fullNumberWithCommas' | 'numberAndWord'): string => {
   if (format === 'fullNumberWithCommas') {
-    return `${num}`.split('').reverse().join('').match(/.{1,3}/g)!.join(',').split('').reverse().join('');
+    let [whole, fraction] = `${num}`.split('.');
+    whole = `${whole}`.split('').reverse().join('').match(/.{1,3}/g)!.join(',').split('').reverse().join('');
+    return `${whole}${fraction ? `.${fraction}` : ''}`;
   }
 
   const wordSuffixes = ['thousand', 'million', 'billion', 'trillion', 'quadrillion'];
