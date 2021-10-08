@@ -14,8 +14,10 @@ import {BlankWidget} from './blankWidget';
 import {TotalSupplyPieChartWidget} from './totalSupplyPieChartWidget';
 import {TaprootCountdownWidget} from './taprootCountdownWidget';
 import {BlockHeightWidget} from './blockHeightWidget';
+import {PriceWidget} from './priceWidget';
 
 const blockHeight = 704041;
+const pricePerCoin = 54695;
 
 const useStyles = makeStyles((theme: Theme) =>
   ({
@@ -41,7 +43,7 @@ const SubApp = () => {
     <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
     <TaprootCountdownWidget blockHeight={blockHeight}/>,
     <BlockHeightWidget blockHeight={blockHeight}/>,
-    <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
+    <PriceWidget pricePerCoin={pricePerCoin}/>,
     <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
     <BlankWidget/>
   ];
