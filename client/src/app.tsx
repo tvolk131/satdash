@@ -2,7 +2,7 @@ import {blue, teal} from '@mui/material/colors';
 import {createTheme, ThemeProvider, Theme} from '@mui/material/styles';
 import {makeStyles} from '@mui/styles';
 import * as React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Snackbar, Box, Grid} from '@mui/material';
 import {TotalSupplyPieChartWidget} from './totalSupplyPieChartWidget';
 import {TaprootCountdownWidget} from './taprootCountdownWidget';
@@ -10,9 +10,9 @@ import {BlockHeightWidget} from './blockHeightWidget';
 import {PriceWidget} from './priceWidget';
 import {SatsPerDollarWidget} from './satsPerDollarWidget';
 import {MarketCapWidget} from './marketCapWidget';
-
-const blockHeight = 704041;
-const pricePerCoin = 54695;
+import {LoadingWidget} from './loadingWidget';
+import {ErrorWidget} from './errorWidget';
+import {getBitcoinPrice, getBitcoinBlockHeight} from './api';
 
 const useStyles = makeStyles((theme: Theme) =>
   ({
@@ -29,18 +29,91 @@ const SubApp = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
+  const [pricePerCoin, setPricePerCoin] = useState<number | null | undefined>(undefined);
+  const [blockHeight, setBlockHeight] = useState<number | null | undefined>(undefined);
+
+  useEffect(() => {
+    getBitcoinPrice()
+      .then((pricePerCoin) => setPricePerCoin(pricePerCoin))
+      .catch(() => setPricePerCoin(null));
+
+    getBitcoinBlockHeight()
+      .then((blockHeight) => setBlockHeight(blockHeight))
+      .catch(() => setBlockHeight(null));
+  }, []);
+
   const showSnackbarMessage = (message: string) => {
     setShowSnackbar(true);
     setSnackbarMessage(message);
   };
 
+  const totalSupplyPieChartWidget = (() => {
+    if (blockHeight === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <TotalSupplyPieChartWidget blockHeight={blockHeight}/>;
+    }
+  })();
+
+  const taprootCountdownWidget = (() => {
+    if (blockHeight === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <TaprootCountdownWidget blockHeight={blockHeight}/>;
+    }
+  })();
+
+  const blockHeightWidget = (() => {
+    if (blockHeight === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <BlockHeightWidget blockHeight={blockHeight}/>;
+    }
+  })();
+
+  const priceWidget = (() => {
+    if (pricePerCoin === null) {
+      return <ErrorWidget/>;
+    } else if (pricePerCoin === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <PriceWidget pricePerCoin={pricePerCoin}/>;
+    }
+  })();
+
+  const satsPerDollarWidget = (() => {
+    if (pricePerCoin === null) {
+      return <ErrorWidget/>;
+    } else if (pricePerCoin === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <SatsPerDollarWidget pricePerCoin={pricePerCoin}/>;
+    }
+  })();
+
+  const marketCapWidget = (() => {
+    if (blockHeight === null || pricePerCoin === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined || pricePerCoin === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <MarketCapWidget blockHeight={blockHeight} pricePerCoin={pricePerCoin}/>;
+    }
+  })();
+
   const widgets = [
-    <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
-    <TaprootCountdownWidget blockHeight={blockHeight}/>,
-    <BlockHeightWidget blockHeight={blockHeight}/>,
-    <PriceWidget pricePerCoin={pricePerCoin}/>,
-    <SatsPerDollarWidget pricePerCoin={pricePerCoin}/>,
-    <MarketCapWidget blockHeight={blockHeight} pricePerCoin={pricePerCoin}/>
+    totalSupplyPieChartWidget,
+    taprootCountdownWidget,
+    blockHeightWidget,
+    priceWidget,
+    satsPerDollarWidget,
+    marketCapWidget
   ];
 
   return (
