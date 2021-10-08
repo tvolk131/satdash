@@ -12,6 +12,7 @@ import {useState} from 'react';
 import {Snackbar, Box, Grid} from '@mui/material';
 import {BlankWidget} from './blankWidget';
 import {TotalSupplyPieChartWidget} from './totalSupplyPieChartWidget';
+import {TaprootCountdownWidget} from './taprootCountdownWidget';
 
 const blockHeight = 704041;
 
@@ -37,7 +38,7 @@ const SubApp = () => {
 
   const widgets = [
     <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
-    <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
+    <TaprootCountdownWidget blockHeight={blockHeight}/>,
     <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
     <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
     <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
