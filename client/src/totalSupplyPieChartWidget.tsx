@@ -1,25 +1,9 @@
 import * as React from 'react';
 import {Paper, Typography} from '@mui/material';
 import {PieChart} from 'react-minimal-pie-chart';
-import {getMinedBitcoinAmountFromBlockHeight} from './helper';
+import {getMinedBitcoinAmountFromBlockHeight, truncateNumber} from './helper';
 
 const totalBitcoin = 21000000;
-
-const truncate = (num: number, digits: number) => {
-  const numString = `${num}`;
-  let [whole, fraction] = numString.split('.');
-  if (fraction) {
-    fraction = fraction.substring(0, digits);
-  } else {
-    fraction = '';
-  }
-
-  if (fraction === '') {
-    return whole;
-  } else {
-    return `${whole}.${fraction}`;
-  };
-};
 
 interface TotalSupplyPieChartWidgetProps {
   blockHeight: number
@@ -32,7 +16,7 @@ export const TotalSupplyPieChartWidget = (props: TotalSupplyPieChartWidgetProps)
   return (
     <div style={{padding: '10px'}}>
       <Paper style={{height: '400px', width: '400px', position: 'relative'}}>
-        <Typography variant={'h5'} style={{position: 'absolute', padding: '24px 0', justifyContent: 'center', display: 'flex', top: 0, left: 0, right: 0}}>{truncate(minedBitcoin / totalBitcoin * 100, 4)}% of coins mined</Typography>
+        <Typography variant={'h5'} style={{position: 'absolute', padding: '24px 0', justifyContent: 'center', display: 'flex', top: 0, left: 0, right: 0}}>{truncateNumber(minedBitcoin / totalBitcoin * 100, 4)}% of coins mined</Typography>
         <PieChart
           data={[
             {title: 'Mined', value: minedBitcoin, color: '#F7931A'},
