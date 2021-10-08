@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Paper, Typography} from '@mui/material';
 import {PieChart} from 'react-minimal-pie-chart';
-import {getMinedBitcoinAmountFromBlockHeight, truncateNumber} from './helper';
+import {getMinedBitcoinAmountFromBlockHeight, truncateNumber, formatNumber} from '../helper';
 
 const totalBitcoin = 21000000;
 

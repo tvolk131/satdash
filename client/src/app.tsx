@@ -4,14 +4,14 @@ import {makeStyles} from '@mui/styles';
 import * as React from 'react';
 import {useState, useEffect} from 'react';
 import {Snackbar, Box, Grid} from '@mui/material';
-import {TotalSupplyPieChartWidget} from './totalSupplyPieChartWidget';
-import {TaprootCountdownWidget} from './taprootCountdownWidget';
-import {BlockHeightWidget} from './blockHeightWidget';
-import {PriceWidget} from './priceWidget';
-import {SatsPerDollarWidget} from './satsPerDollarWidget';
-import {MarketCapWidget} from './marketCapWidget';
-import {LoadingWidget} from './loadingWidget';
-import {ErrorWidget} from './errorWidget';
+import {TotalSupplyPieChartWidget} from './widgets/totalSupplyPieChartWidget';
+import {TaprootCountdownWidget} from './widgets/taprootCountdownWidget';
+import {BlockHeightWidget} from './widgets/blockHeightWidget';
+import {PriceWidget} from './widgets/priceWidget';
+import {SatsPerDollarWidget} from './widgets/satsPerDollarWidget';
+import {MarketCapWidget} from './widgets/marketCapWidget';
+import {LoadingWidget} from './widgets/loadingWidget';
+import {ErrorWidget} from './widgets/errorWidget';
 import {getBitcoinPrice, getBitcoinBlockHeight} from './api';
 
 const useStyles = makeStyles((theme: Theme) =>
