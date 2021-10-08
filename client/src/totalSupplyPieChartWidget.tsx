@@ -1,10 +1,9 @@
 import * as React from 'react';
 import {Paper, Typography} from '@mui/material';
 import {PieChart} from 'react-minimal-pie-chart';
+import {getMinedBitcoinAmountFromBlockHeight} from './helper';
 
-const totalBitcoin = 21000000
-const minedBitcoin = 18837381;
-const unminedBitcoin = totalBitcoin - minedBitcoin;
+const totalBitcoin = 21000000;
 
 const truncate = (num: number, digits: number) => {
   const numString = `${num}`;
@@ -22,7 +21,14 @@ const truncate = (num: number, digits: number) => {
   };
 };
 
-export const TotalSupplyPieChartWidget = () => {
+interface TotalSupplyPieChartWidgetProps {
+  blockHeight: number
+}
+
+export const TotalSupplyPieChartWidget = (props: TotalSupplyPieChartWidgetProps) => {
+  const minedBitcoin = getMinedBitcoinAmountFromBlockHeight(props.blockHeight);
+  const unminedBitcoin = totalBitcoin - minedBitcoin;
+
   return (
     <div style={{padding: '10px'}}>
       <Paper style={{height: '400px', width: '400px', position: 'relative'}}>

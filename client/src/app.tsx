@@ -13,6 +13,8 @@ import {Snackbar, Box, Grid} from '@mui/material';
 import {BlankWidget} from './blankWidget';
 import {TotalSupplyPieChartWidget} from './totalSupplyPieChartWidget';
 
+const blockHeight = 704041;
+
 const useStyles = makeStyles((theme: Theme) =>
   ({
     root: {
@@ -34,11 +36,11 @@ const SubApp = () => {
   };
 
   const widgets = [
-    <TotalSupplyPieChartWidget/>,
-    <TotalSupplyPieChartWidget/>,
-    <TotalSupplyPieChartWidget/>,
-    <TotalSupplyPieChartWidget/>,
-    <TotalSupplyPieChartWidget/>,
+    <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
+    <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
+    <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
+    <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
+    <TotalSupplyPieChartWidget blockHeight={blockHeight}/>,
     <BlankWidget/>
   ];
 

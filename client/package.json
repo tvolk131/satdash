@@ -19,8 +19,11 @@
     "react-minimal-pie-chart": "8.2.0"
   },
   "devDependencies": {
+    "@types/jest": "27.0.2",
     "@types/react-dom": "17.0.9",
     "fork-ts-checker-webpack-plugin": "6.3.3",
+    "jest": "27.2.4",
+    "ts-jest": "27.0.5",
     "ts-loader": "9.2.6",
     "ts-node": "10.2.1",
     "tslint": "6.1.3",
