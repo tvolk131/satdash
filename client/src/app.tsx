@@ -156,7 +156,7 @@ const SubApp = () => {
           </Box>
         </div>
       </div>
-      <Paper style={{position: 'absolute', bottom: 0, right: 0, margin: '20px'}}>
+      <Paper style={{position: 'fixed', bottom: 0, right: 0, margin: '20px'}}>
         <Typography
           variant={'h5'}
           style={{padding: '10px'}}
