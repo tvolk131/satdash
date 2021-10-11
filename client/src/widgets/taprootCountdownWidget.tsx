@@ -1,34 +1,8 @@
 import * as React from 'react';
 import {Paper, Typography} from '@mui/material';
+import {getDurationEstimateFromBlockCount} from '../helper';
 
 const taprootBlockHeight = 709632;
-
-const getDurationEstimateFromBlockCount = (blockCount: number): string => {
-  let minutes = blockCount * 10;
-
-  let years = 0;
-
-  while (minutes >= 525600) {
-    years += 1;
-    minutes -= 525600;
-  }
-
-  let days = 0;
-
-  while (minutes >= 1440) {
-    days += 1;
-    minutes -= 1440;
-  }
-
-  let hours = 0;
-
-  while (minutes >= 60) {
-    hours += 1;
-    minutes -= 60;
-  }
-
-  return `${years ? `${years} years, ` : ''}${days} days, ${hours} hours, and ${minutes} minutes`;
-}
 
 interface TaprootCountdownWidgetProps {
   blockHeight: number

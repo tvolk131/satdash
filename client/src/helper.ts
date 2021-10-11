@@ -67,3 +67,75 @@ export const formatNumber = (num: number, format: 'fullNumberWithCommas' | 'numb
 
   return `${truncateNumber(num, 2)} ${wordSuffixes[wordSuffixIndex]}`;
 };
+
+const getDurationEstimateObjectFromBlockCount = (blockCount: number) => {
+  let minutes = blockCount * 10;
+
+  let years = 0;
+
+  while (minutes >= 525600) {
+    years += 1;
+    minutes -= 525600;
+  }
+
+  let days = 0;
+
+  while (minutes >= 1440) {
+    days += 1;
+    minutes -= 1440;
+  }
+
+  let hours = 0;
+
+  while (minutes >= 60) {
+    hours += 1;
+    minutes -= 60;
+  }
+
+  return {years, days, hours, minutes};
+};
+
+export const getDurationEstimateFromBlockCount = (blockCount: number): string => {
+  const {
+    years,
+    days,
+    hours,
+    minutes
+  } = getDurationEstimateObjectFromBlockCount(blockCount);
+
+  const stringChunks = [];
+
+  if (years === 1) {
+    stringChunks.push(`${years} year`);
+  } else if (years > 1) {
+    stringChunks.push(`${years} years`);
+  }
+
+  if (days === 1) {
+    stringChunks.push(`${days} day`);
+  } else if (days > 1 || (days === 0 && stringChunks.length)) {
+    stringChunks.push(`${days} days`);
+  }
+
+  if (hours === 1) {
+    stringChunks.push(`${hours} hour`);
+  } else if (hours > 1 || (hours === 0 && stringChunks.length)) {
+    stringChunks.push(`${hours} hours`);
+  }
+
+  if (minutes === 1) {
+    stringChunks.push(`${minutes} minute`);
+  } else if (minutes > 1 || (minutes === 0 && stringChunks.length)) {
+    stringChunks.push(`${minutes} minutes`);
+  }
+
+  if (stringChunks.length === 0) {
+    return '0 minutes'
+  } else if (stringChunks.length === 1) {
+    return stringChunks[0];
+  }
+
+  const lastChunk = stringChunks.pop();
+
+  return [stringChunks.join(', '), lastChunk].join(' and ');
+};

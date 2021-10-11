@@ -1,4 +1,4 @@
-import {getMinedBitcoinAmountFromBlockHeight, truncateNumber, formatNumber} from './helper';
+import {getMinedBitcoinAmountFromBlockHeight, truncateNumber, formatNumber, getDurationEstimateFromBlockCount} from './helper';
 
 describe('getMinedBitcoinAmountFromBlockHeight', () => {
   it('returns correct value for intial block heights', () => {
@@ -91,5 +91,32 @@ describe('formatNumber', () => {
   it('number with word handles decimal numbers', () => {
     expect(formatNumber(0.1234, 'numberAndWord')).toEqual('0.12');
     expect(formatNumber(123456.789, 'numberAndWord')).toEqual('123.46 thousand');
+  });
+});
+
+describe('getDurationEstimateFromBlockCount', () => {
+  it('returns correct value for many orders of magnitude', () => {
+    expect(getDurationEstimateFromBlockCount(1)).toEqual('10 minutes');
+    expect(getDurationEstimateFromBlockCount(10)).toEqual('1 hour and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(100)).toEqual('16 hours and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(1000)).toEqual('6 days, 22 hours and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(10000)).toEqual('69 days, 10 hours and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(100000)).toEqual('1 year, 329 days, 10 hours and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(1000000)).toEqual('19 years, 9 days, 10 hours and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(10000000)).toEqual('190 years, 94 days, 10 hours and 40 minutes');
+  });
+
+  it('uses singular values when appropriate', () => {
+    expect(getDurationEstimateFromBlockCount(52710)).toEqual('1 year, 1 day, 1 hour and 0 minutes');
+  });
+
+  it('truncates from the left side', () => {
+    expect(getDurationEstimateFromBlockCount(52560)).toEqual('1 year, 0 days, 0 hours and 0 minutes');
+    expect(getDurationEstimateFromBlockCount(144)).toEqual('1 day, 0 hours and 0 minutes');
+    expect(getDurationEstimateFromBlockCount(6)).toEqual('1 hour and 0 minutes');
+  });
+
+  it('handles zero-block input', () => {
+    expect(getDurationEstimateFromBlockCount(0)).toEqual('0 minutes');
   });
 });
