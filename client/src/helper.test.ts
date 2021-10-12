@@ -1,4 +1,4 @@
-import {getMinedBitcoinAmountFromBlockHeight, truncateNumber, formatNumber} from './helper';
+import {getMinedBitcoinAmountFromBlockHeight, getBlockRewardFromBlockHeight, truncateNumber, formatNumber} from './helper';
 
 describe('getMinedBitcoinAmountFromBlockHeight', () => {
   it('returns correct value for intial block heights', () => {
@@ -22,6 +22,22 @@ describe('getMinedBitcoinAmountFromBlockHeight', () => {
 
   it('converges on 21,000,000 coins', () => {
     expect(getMinedBitcoinAmountFromBlockHeight(100000000)).toEqual(21000000);
+  });
+});
+
+describe('getBlockRewardFromBlockHeight', () => {
+  it('returns correct value', () => {
+    expect(getBlockRewardFromBlockHeight(0)).toEqual(50);
+    expect(getBlockRewardFromBlockHeight(210000)).toEqual(50);
+
+    expect(getBlockRewardFromBlockHeight(210001)).toEqual(25);
+    expect(getBlockRewardFromBlockHeight(420000)).toEqual(25);
+
+    expect(getBlockRewardFromBlockHeight(420001)).toEqual(12.5);
+    expect(getBlockRewardFromBlockHeight(630000)).toEqual(12.5);
+
+    expect(getBlockRewardFromBlockHeight(630001)).toEqual(6.25);
+    expect(getBlockRewardFromBlockHeight(840000)).toEqual(6.25);
   });
 });
 
