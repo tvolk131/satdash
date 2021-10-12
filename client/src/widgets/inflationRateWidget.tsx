@@ -7,6 +7,9 @@ interface InflationRateWidgetProps {
 }
 
 export const InflationRateWidget = (props: InflationRateWidgetProps) => {
+  const currentAnnualizedBlockRewards = getBlockRewardFromBlockHeight(props.blockHeight) * 144 * 365;
+  const inflationRate = currentAnnualizedBlockRewards / getMinedBitcoinAmountFromBlockHeight(props.blockHeight) * 100;
+
   return (
     <div style={{padding: '10px'}}>
       <Paper style={{height: '400px', width: '400px'}}>
@@ -15,7 +18,7 @@ export const InflationRateWidget = (props: InflationRateWidgetProps) => {
             Annual Inflation Rate
           </Typography>
           <Typography variant={'h2'} style={{padding: '10px', textAlign: 'center'}}>
-            {truncateNumber(getBlockRewardFromBlockHeight(props.blockHeight) * 144 * 365 / getMinedBitcoinAmountFromBlockHeight(props.blockHeight) * 100, 4)}%
+            {truncateNumber(inflationRate, 4)}%
           </Typography>
         </div>
       </Paper>
