@@ -106,7 +106,7 @@ const getDurationEstimateObjectFromBlockCount = (blockCount: number) => {
   return {years, days, hours, minutes};
 };
 
-export const getDurationEstimateFromBlockCount = (blockCount: number): string => {
+const getDurationEstimateStringChunks = (blockCount: number) => {
   const {
     years,
     days,
@@ -136,13 +136,17 @@ export const getDurationEstimateFromBlockCount = (blockCount: number): string =>
 
   if (minutes === 1) {
     stringChunks.push(`${minutes} minute`);
-  } else if (minutes > 1 || (minutes === 0 && stringChunks.length)) {
+  } else if (stringChunks.length === 0 || minutes > 1 || (minutes === 0 && stringChunks.length)) {
     stringChunks.push(`${minutes} minutes`);
   }
 
-  if (stringChunks.length === 0) {
-    return '0 minutes'
-  } else if (stringChunks.length === 1) {
+  return stringChunks;
+};
+
+export const getDurationEstimateFromBlockCount = (blockCount: number): string => {
+  const stringChunks = getDurationEstimateStringChunks(blockCount);
+
+  if (stringChunks.length === 1) {
     return stringChunks[0];
   }
 

@@ -31,7 +31,7 @@
       "no-shadowed-variable": false,
       "no-bitwise": false,
       "no-var-requires": false,
-      "cyclomatic-complexity": [true, 15],
+      "cyclomatic-complexity": [true, 16],
       "strict-type-predicates": true
   }
 }
