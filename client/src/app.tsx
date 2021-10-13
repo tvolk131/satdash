@@ -13,6 +13,7 @@ import {MarketCapWidget} from './widgets/marketCapWidget';
 import {LoadingWidget} from './widgets/loadingWidget';
 import {ErrorWidget} from './widgets/errorWidget';
 import {getBitcoinPrice, getBitcoinBlockHeight} from './api';
+import {InflationRateWidget} from './widgets/inflationRateWidget';
 
 const useStyles = makeStyles((theme: Theme) =>
   ({
@@ -129,13 +130,24 @@ const SubApp = () => {
     }
   })();
 
+  const inflationRateWidget = (() => {
+    if (blockHeight === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <InflationRateWidget blockHeight={blockHeight}/>;
+    }
+  })();
+
   const widgets = [
     totalSupplyPieChartWidget,
     taprootCountdownWidget,
     blockHeightWidget,
     priceWidget,
     satsPerDollarWidget,
-    marketCapWidget
+    marketCapWidget,
+    inflationRateWidget
   ];
 
   return (

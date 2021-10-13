@@ -16,6 +16,17 @@ export const getMinedBitcoinAmountFromBlockHeight = (blockHeight: number): numbe
   return bitcoinAmount;
 };
 
+export const getBlockRewardFromBlockHeight = (blockHeight: number): number => {
+  let blockReward = 50;
+
+  while (blockHeight > blockHalvingCount) {
+    blockHeight -= blockHalvingCount;
+    blockReward /= 2;
+  }
+
+  return blockReward;
+};
+
 export const truncateNumber = (num: number, digits: number): number => {
   if (digits < 0) {
     let divisionFactor = 1;

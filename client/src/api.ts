@@ -5,5 +5,5 @@ export const getBitcoinPrice = async (): Promise<number> => {
 };
 
 export const getBitcoinBlockHeight = async (): Promise<number> => {
-  return (await axios.get('https://blockchain.info/q/getblockcount')).data;
+  return (await axios.get('https://blockchain.info/q/getblockcount')).data as number;
 };
