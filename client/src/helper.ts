@@ -146,7 +146,23 @@ export const getDurationEstimateFromBlockCount = (blockCount: number): string =>
     return stringChunks[0];
   }
 
+  while (stringChunks.length > 3) {
+    stringChunks.pop();
+  }
+
   const lastChunk = stringChunks.pop();
 
   return [stringChunks.join(', '), lastChunk].join(' and ');
+};
+
+export const getNextHalvingData = (blockHeight: number): {blockHeight: number, blockReward: number} => {
+  let nextHalvingHeight = 210000;
+  let nextBlockReward = 25;
+
+  while (nextHalvingHeight <= blockHeight) {
+    nextHalvingHeight += 210000;
+    nextBlockReward /= 2;
+  }
+
+  return {blockHeight: nextHalvingHeight, blockReward: nextBlockReward};
 };

@@ -1,4 +1,11 @@
-import {getMinedBitcoinAmountFromBlockHeight, getBlockRewardFromBlockHeight, truncateNumber, formatNumber, getDurationEstimateFromBlockCount} from './helper';
+import {
+  getMinedBitcoinAmountFromBlockHeight,
+  getBlockRewardFromBlockHeight,
+  truncateNumber,
+  formatNumber,
+  getDurationEstimateFromBlockCount,
+  getNextHalvingData
+} from './helper';
 
 describe('getMinedBitcoinAmountFromBlockHeight', () => {
   it('returns correct value for intial block heights', () => {
@@ -117,22 +124,39 @@ describe('getDurationEstimateFromBlockCount', () => {
     expect(getDurationEstimateFromBlockCount(100)).toEqual('16 hours and 40 minutes');
     expect(getDurationEstimateFromBlockCount(1000)).toEqual('6 days, 22 hours and 40 minutes');
     expect(getDurationEstimateFromBlockCount(10000)).toEqual('69 days, 10 hours and 40 minutes');
-    expect(getDurationEstimateFromBlockCount(100000)).toEqual('1 year, 329 days, 10 hours and 40 minutes');
-    expect(getDurationEstimateFromBlockCount(1000000)).toEqual('19 years, 9 days, 10 hours and 40 minutes');
-    expect(getDurationEstimateFromBlockCount(10000000)).toEqual('190 years, 94 days, 10 hours and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(100000)).toEqual('1 year, 329 days and 10 hours');
+    expect(getDurationEstimateFromBlockCount(1000000)).toEqual('19 years, 9 days and 10 hours');
+    expect(getDurationEstimateFromBlockCount(10000000)).toEqual('190 years, 94 days and 10 hours');
   });
 
   it('uses singular values when appropriate', () => {
-    expect(getDurationEstimateFromBlockCount(52710)).toEqual('1 year, 1 day, 1 hour and 0 minutes');
+    expect(getDurationEstimateFromBlockCount(52710)).toEqual('1 year, 1 day and 1 hour');
   });
 
   it('truncates from the left side', () => {
-    expect(getDurationEstimateFromBlockCount(52560)).toEqual('1 year, 0 days, 0 hours and 0 minutes');
+    expect(getDurationEstimateFromBlockCount(52560)).toEqual('1 year, 0 days and 0 hours');
     expect(getDurationEstimateFromBlockCount(144)).toEqual('1 day, 0 hours and 0 minutes');
     expect(getDurationEstimateFromBlockCount(6)).toEqual('1 hour and 0 minutes');
   });
 
   it('handles zero-block input', () => {
     expect(getDurationEstimateFromBlockCount(0)).toEqual('0 minutes');
+  });
+
+  it('truncates to maximum of 3 units', () => {
+    expect(getDurationEstimateFromBlockCount(52559)).toEqual('364 days, 23 hours and 50 minutes');
+    expect(getDurationEstimateFromBlockCount(52560)).toEqual('1 year, 0 days and 0 hours');
+  });
+});
+
+describe('getNextHalvingData', () => {
+  it('returns correct value', () => {
+    expect(getNextHalvingData(0)).toEqual({blockHeight: 210000, blockReward: 25});
+    expect(getNextHalvingData(1)).toEqual({blockHeight: 210000, blockReward: 25});
+    expect(getNextHalvingData(209999)).toEqual({blockHeight: 210000, blockReward: 25});
+    expect(getNextHalvingData(210000)).toEqual({blockHeight: 420000, blockReward: 12.5});
+
+    expect(getNextHalvingData(839999)).toEqual({blockHeight: 840000, blockReward: 3.125});
+    expect(getNextHalvingData(840000)).toEqual({blockHeight: 1050000, blockReward: 1.5625});
   });
 });
