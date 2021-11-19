@@ -5,7 +5,6 @@ import * as React from 'react';
 import {useState, useEffect, useCallback} from 'react';
 import {Snackbar, Box, Grid, Typography, Paper} from '@mui/material';
 import {TotalSupplyPieChartWidget} from './widgets/totalSupplyPieChartWidget';
-import {TaprootCountdownWidget} from './widgets/taprootCountdownWidget';
 import {BlockHeightWidget} from './widgets/blockHeightWidget';
 import {PriceWidget} from './widgets/priceWidget';
 import {SatsPerDollarWidget} from './widgets/satsPerDollarWidget';
@@ -81,16 +80,6 @@ const SubApp = () => {
     }
   })();
 
-  const taprootCountdownWidget = (() => {
-    if (blockHeight === null) {
-      return <ErrorWidget/>;
-    } else if (blockHeight === undefined) {
-      return <LoadingWidget/>;
-    } else {
-      return <TaprootCountdownWidget blockHeight={blockHeight}/>;
-    }
-  })();
-
   const blockHeightWidget = (() => {
     if (blockHeight === null) {
       return <ErrorWidget/>;
@@ -153,7 +142,6 @@ const SubApp = () => {
 
   const widgets = [
     totalSupplyPieChartWidget,
-    taprootCountdownWidget,
     blockHeightWidget,
     priceWidget,
     satsPerDollarWidget,
