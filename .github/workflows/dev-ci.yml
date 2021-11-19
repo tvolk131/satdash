@@ -19,7 +19,6 @@ jobs:
           node-version: '15.x'
       - name: Build
         run: |
-          rustup default nightly
           cd client
           npm ci
           npm run check-typescript-types
