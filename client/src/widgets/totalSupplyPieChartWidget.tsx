@@ -20,7 +20,7 @@ export const TotalSupplyPieChartWidget = (props: TotalSupplyPieChartWidgetProps)
         <PieChart
           data={[
             {title: 'Mined', value: minedBitcoin, color: '#F7931A'},
-            {title: 'Unined', value: unminedBitcoin, color: '#4D4D4E'}
+            {title: 'Unmined', value: unminedBitcoin, color: '#4D4D4E'}
           ]}
           radius={30}
         />
