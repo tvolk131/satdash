@@ -32,13 +32,13 @@ impl BPIEngine {
 
     pub fn get_series_data(
         &self,
-        area_code_or: Option<&AreaCode>,
         item_code_or: Option<&ItemCode>,
+        area_code_or: Option<&AreaCode>,
         start_year_or: Option<i32>,
         end_year_or: Option<i32>,
     ) -> Vec<BPISeriesEntry> {
         self.cpi_query_engine
-            .get_series_data(area_code_or, item_code_or, start_year_or, end_year_or)
+            .get_series_data(item_code_or, area_code_or, start_year_or, end_year_or)
             .iter()
             .filter_map(|entry| self.cpi_entry_to_bpi_entry(entry))
             .collect()
@@ -50,8 +50,8 @@ impl BPIEngine {
         for item in self.get_items() {
             for area in self.get_areas() {
                 let series_entries = self.get_series_data(
-                    Some(area.get_area_code()),
                     Some(item.get_item_code()),
+                    Some(area.get_area_code()),
                     None,
                     None,
                 );

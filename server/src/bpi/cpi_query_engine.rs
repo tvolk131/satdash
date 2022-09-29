@@ -27,8 +27,8 @@ impl CpiQueryEngine {
 
     pub fn get_series_data(
         &self,
-        area_code_or: Option<&AreaCode>,
         item_code_or: Option<&ItemCode>,
+        area_code_or: Option<&AreaCode>,
         start_year_or: Option<i32>,
         end_year_or: Option<i32>,
     ) -> Vec<&SeriesEntry> {

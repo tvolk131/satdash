@@ -80,8 +80,8 @@ fn bpi_item_handler(
 ) -> rocket::response::content::Json<String> {
     rocket::response::content::Json(
         serde_json::json!(bpi_engine.get_series_data(
-            Some(&area_code),
             Some(&item_code),
+            Some(&area_code),
             None,
             None
         ))
