@@ -1,7 +1,7 @@
-use std::collections::HashMap;
 use super::cpi_ap::{
-    get_areas, get_current_series_entries, get_items, Area, AreaCode, Item, ItemCode, SeriesEntry
+    get_areas, get_current_series_entries, get_items, Area, AreaCode, Item, ItemCode, SeriesEntry,
 };
+use std::collections::HashMap;
 
 pub struct CpiQueryEngine {
     areas: Vec<Area>,
@@ -15,11 +15,14 @@ impl CpiQueryEngine {
 
         for series_entry in get_current_series_entries().await.unwrap() {
             if !series_entries_by_item_code.contains_key(series_entry.get_item_code()) {
-                series_entries_by_item_code.insert(series_entry.get_item_code().clone(), Vec::new());
+                series_entries_by_item_code
+                    .insert(series_entry.get_item_code().clone(), Vec::new());
             }
 
             // Note: unwrap is safe here because of the check above.
-            let entries_by_item_code = series_entries_by_item_code.get_mut(series_entry.get_item_code()).unwrap();
+            let entries_by_item_code = series_entries_by_item_code
+                .get_mut(series_entry.get_item_code())
+                .unwrap();
             entries_by_item_code.push(series_entry);
         }
 
@@ -45,34 +48,33 @@ impl CpiQueryEngine {
         start_year_or: Option<i32>,
         end_year_or: Option<i32>,
     ) -> Vec<&SeriesEntry> {
-        let mut filtered_series_entries: Vec<&SeriesEntry> = match self
-            .series_entries_by_item_code.get(item_code) {
-                Some(item_entries) => {
-                    item_entries.iter()
-                        .filter(|series_entry| {
-                            if let Some(area_code) = area_code_or {
-                                if series_entry.get_area_code() != area_code {
-                                    return false;
-                                }
+        let mut filtered_series_entries: Vec<&SeriesEntry> =
+            match self.series_entries_by_item_code.get(item_code) {
+                Some(item_entries) => item_entries
+                    .iter()
+                    .filter(|series_entry| {
+                        if let Some(area_code) = area_code_or {
+                            if series_entry.get_area_code() != area_code {
+                                return false;
                             }
-            
-                            if let Some(start_year) = start_year_or {
-                                if series_entry.get_year() < start_year {
-                                    return false;
-                                }
+                        }
+
+                        if let Some(start_year) = start_year_or {
+                            if series_entry.get_year() < start_year {
+                                return false;
                             }
-            
-                            if let Some(end_year) = end_year_or {
-                                if series_entry.get_year() > end_year {
-                                    return false;
-                                }
+                        }
+
+                        if let Some(end_year) = end_year_or {
+                            if series_entry.get_year() > end_year {
+                                return false;
                             }
-            
-                            true
-                        })
-                        .collect()
-                },
-                None => return Vec::new()
+                        }
+
+                        true
+                    })
+                    .collect(),
+                None => return Vec::new(),
             };
 
         // Sort results chronologically.
