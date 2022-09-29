@@ -70,14 +70,23 @@ fn not_found_handler(req: &Request) -> NotFoundResponse {
     }
 }
 
-#[get("/bpi/item/<item_id>")]
+#[get("/bpi/item/<item_code>")]
 fn bpi_item_handler(
-    item_id: &str,
+    item_code: &str,
     bpi_engine: &State<bpi::BPIEngine>,
 ) -> rocket::response::content::Json<String> {
     rocket::response::content::Json(
-        serde_json::json!(bpi_engine.get_series_data(Some("0000"), Some(item_id), None, None))
+        serde_json::json!(bpi_engine.get_series_data(Some("0000"), Some(item_code), None, None))
             .to_string(),
+    )
+}
+
+#[get("/bpi/datasets")]
+fn bpi_datasets_handler(
+    bpi_engine: &State<bpi::BPIEngine>,
+) -> rocket::response::content::Json<String> {
+    rocket::response::content::Json(
+        serde_json::json!(bpi_engine.get_valid_series_ranges()).to_string(),
     )
 }
 
@@ -105,6 +114,11 @@ async fn rocket() -> _ {
         .register("/", catchers![not_found_handler])
         .mount(
             "/api",
-            routes![bpi_item_handler, bpi_areas_handler, bpi_items_handler],
+            routes![
+                bpi_item_handler,
+                bpi_datasets_handler,
+                bpi_areas_handler,
+                bpi_items_handler
+            ],
         )
 }

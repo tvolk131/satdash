@@ -7,6 +7,12 @@ pub struct Area {
     area_name: String,
 }
 
+impl Area {
+    pub fn get_area_code(&self) -> &str {
+        &self.area_code
+    }
+}
+
 pub async fn get_areas() -> Result<Vec<Area>, reqwest::Error> {
     get_data_sheet("https://download.bls.gov/pub/time.series/ap/ap.area").await
 }
@@ -15,6 +21,12 @@ pub async fn get_areas() -> Result<Vec<Area>, reqwest::Error> {
 pub struct Item {
     item_code: String,
     item_name: String,
+}
+
+impl Item {
+    pub fn get_item_code(&self) -> &str {
+        &self.item_code
+    }
 }
 
 pub async fn get_items() -> Result<Vec<Item>, reqwest::Error> {

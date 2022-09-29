@@ -42,6 +42,35 @@ impl BPIEngine {
             .collect()
     }
 
+    pub fn get_valid_series_ranges(&self) -> Vec<BPISeriesRange> {
+        let mut series_ranges = Vec::new();
+
+        for item in self.get_items() {
+            for area in self.get_areas() {
+                let series_entries = self.get_series_data(
+                    Some(area.get_area_code()),
+                    Some(item.get_item_code()),
+                    None,
+                    None,
+                );
+                if let Some(first_entry) = series_entries.first() {
+                    if let Some(last_entry) = series_entries.last() {
+                        series_ranges.push(BPISeriesRange {
+                            item_code: String::from(item.get_item_code()),
+                            area_code: String::from(area.get_area_code()),
+                            start_year: first_entry.year,
+                            start_month: first_entry.month,
+                            end_year: last_entry.year,
+                            end_month: last_entry.month,
+                        });
+                    }
+                }
+            }
+        }
+
+        series_ranges
+    }
+
     fn cpi_entry_to_bpi_entry(&self, cpi_entry: &cpi_ap::SeriesEntry) -> Option<BPISeriesEntry> {
         let year = cpi_entry.get_year();
         let month = cpi_entry.get_period();
@@ -66,4 +95,14 @@ pub struct BPISeriesEntry {
     year: i32,
     month: i32,
     value_sats: i32,
+}
+
+#[derive(Debug, Serialize)]
+pub struct BPISeriesRange {
+    item_code: String,
+    area_code: String,
+    start_year: i32,
+    start_month: i32,
+    end_year: i32,
+    end_month: i32,
 }
