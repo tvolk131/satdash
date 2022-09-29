@@ -6,6 +6,8 @@ use std::collections::HashMap;
 pub struct CpiQueryEngine {
     areas: Vec<Area>,
     items: Vec<Item>,
+    /// Contains all series entries, split by item code.
+    /// Within each item code, all series entries are sorted chronologically.
     series_entries_by_item_code: HashMap<ItemCode, Vec<SeriesEntry>>,
 }
 
@@ -24,6 +26,20 @@ impl CpiQueryEngine {
                 .get_mut(series_entry.get_item_code())
                 .unwrap();
             entries_by_item_code.push(series_entry);
+        }
+
+        // Sort results for each item chronologically.
+        for (_, item_series_list) in series_entries_by_item_code.iter_mut() {
+            item_series_list.sort_by(|entry_a, entry_b| {
+                let entry_a_year = entry_a.get_year();
+                let entry_b_year = entry_b.get_year();
+
+                if entry_a_year != entry_b_year {
+                    return entry_a_year.cmp(&entry_b_year);
+                }
+
+                entry_a.get_month().cmp(&entry_b.get_month())
+            });
         }
 
         Self {
@@ -48,7 +64,7 @@ impl CpiQueryEngine {
         start_year_or: Option<i32>,
         end_year_or: Option<i32>,
     ) -> Vec<&SeriesEntry> {
-        let mut filtered_series_entries: Vec<&SeriesEntry> =
+        let filtered_series_entries: Vec<&SeriesEntry> =
             match self.series_entries_by_item_code.get(item_code) {
                 Some(item_entries) => item_entries
                     .iter()
@@ -76,18 +92,6 @@ impl CpiQueryEngine {
                     .collect(),
                 None => return Vec::new(),
             };
-
-        // Sort results chronologically.
-        filtered_series_entries.sort_by(|entry_a, entry_b| {
-            let entry_a_year = entry_a.get_year();
-            let entry_b_year = entry_b.get_year();
-
-            if entry_a_year != entry_b_year {
-                return entry_a_year.cmp(&entry_b_year);
-            }
-
-            entry_a.get_month().cmp(&entry_b.get_month())
-        });
 
         filtered_series_entries
     }
