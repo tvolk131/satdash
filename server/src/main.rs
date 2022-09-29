@@ -1,8 +1,12 @@
 #[macro_use]
 extern crate rocket;
 
-use rocket::response::{content, status};
-use rocket::Request;
+use rocket::{
+    response::{content, status},
+    Request, State,
+};
+
+mod bpi;
 
 const FAVICON_BYTES: &[u8] = include_bytes!("../../client/out/favicon.ico");
 const HTML_BYTES: &[u8] = include_bytes!("../../client/out/index.html");
@@ -66,15 +70,41 @@ fn not_found_handler(req: &Request) -> NotFoundResponse {
     }
 }
 
-#[get("/test")]
-fn test_api_handler() -> String {
-    "Test reply!".to_string()
+#[get("/bpi/item/<item_id>")]
+fn bpi_item_handler(
+    item_id: &str,
+    bpi_engine: &State<bpi::BPIEngine>,
+) -> rocket::response::content::Json<String> {
+    rocket::response::content::Json(
+        serde_json::json!(bpi_engine.get_series_data(Some("0000"), Some(item_id), None, None))
+            .to_string(),
+    )
+}
+
+#[get("/bpi/areas")]
+fn bpi_areas_handler(
+    bpi_engine: &State<bpi::BPIEngine>,
+) -> rocket::response::content::Json<String> {
+    rocket::response::content::Json(serde_json::json!(bpi_engine.get_areas()).to_string())
+}
+
+#[get("/bpi/items")]
+fn bpi_items_handler(
+    bpi_engine: &State<bpi::BPIEngine>,
+) -> rocket::response::content::Json<String> {
+    rocket::response::content::Json(serde_json::json!(bpi_engine.get_items()).to_string())
 }
 
 #[rocket::launch]
 async fn rocket() -> _ {
+    println!("Building BPI index...");
+    let bpi_engine = bpi::BPIEngine::new().await;
     println!("Starting server...");
     rocket::build()
+        .manage(bpi_engine)
         .register("/", catchers![not_found_handler])
-        .mount("/api", routes![test_api_handler])
+        .mount(
+            "/api",
+            routes![bpi_item_handler, bpi_areas_handler, bpi_items_handler],
+        )
 }
