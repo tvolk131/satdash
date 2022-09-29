@@ -75,23 +75,30 @@ pub struct SeriesEntry {
     item_code: ItemCode,
     year: i32,
     month: i32,
-    value: String,
+    value: f64,
 }
 
 impl SeriesEntry {
-    fn new_from_raw(raw_series_entry: raw::RawSeriesEntry) -> Self {
+    fn new_from_raw_or(raw_series_entry: raw::RawSeriesEntry) -> Option<Self> {
         let area_code = raw_series_entry.get_area_code().to_string();
         let item_code = raw_series_entry.get_item_code().to_string();
         let month = raw_series_entry.get_period();
 
-        Self {
+        // A few of the CPI entries have a '-' for their value, indicating
+        // that there is no data for that time period. We can simply filter
+        // these out.
+        if raw_series_entry.value == "-" {
+            return None;
+        }
+
+        Some(Self {
             series_id: raw_series_entry.series_id,
             area_code: AreaCode(area_code),
             item_code: ItemCode(item_code),
             year: raw_series_entry.year.parse::<i32>().unwrap(),
             month,
-            value: raw_series_entry.value,
-        }
+            value: raw_series_entry.value.parse().unwrap(),
+        })
     }
 
     pub fn get_series_id(&self) -> &str {
@@ -115,7 +122,7 @@ impl SeriesEntry {
     }
 
     pub fn get_value(&self) -> f64 {
-        self.value.parse().unwrap()
+        self.value
     }
 }
 
@@ -125,7 +132,7 @@ pub async fn get_current_series_entries() -> Result<Vec<SeriesEntry>, reqwest::E
         .map(|raw_series_entries| {
             raw_series_entries
                 .into_iter()
-                .map(SeriesEntry::new_from_raw)
+                .filter_map(SeriesEntry::new_from_raw_or)
                 .collect()
         })
 }
