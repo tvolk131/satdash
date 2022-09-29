@@ -42,7 +42,7 @@ impl BTCPriceHistory {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 struct BTCPriceCSVEntry {
     date: String,
     open: String,

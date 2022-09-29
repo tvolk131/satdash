@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
+#[derive(Serialize, PartialEq, Clone)]
 pub struct AreaCode(String);
 
 impl<'a> rocket::form::FromFormField<'a> for AreaCode {
@@ -9,7 +9,8 @@ impl<'a> rocket::form::FromFormField<'a> for AreaCode {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Area {
     area_code: AreaCode,
     area_name: String,
@@ -34,7 +35,7 @@ pub async fn get_areas() -> Result<Vec<Area>, reqwest::Error> {
         .map(|raw_areas| raw_areas.into_iter().map(Area::new_from_raw).collect())
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
+#[derive(Serialize, PartialEq, Eq, Clone, Hash)]
 pub struct ItemCode(String);
 
 impl<'a> rocket::form::FromFormField<'a> for ItemCode {
@@ -43,7 +44,8 @@ impl<'a> rocket::form::FromFormField<'a> for ItemCode {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Item {
     item_code: ItemCode,
     item_name: String,
@@ -68,7 +70,6 @@ pub async fn get_items() -> Result<Vec<Item>, reqwest::Error> {
         .map(|raw_items| raw_items.into_iter().map(Item::new_from_raw).collect())
 }
 
-#[derive(Debug, Deserialize)]
 pub struct SeriesEntry {
     series_id: String,
     area_code: AreaCode,
@@ -138,10 +139,10 @@ pub async fn get_current_series_entries() -> Result<Vec<SeriesEntry>, reqwest::E
 }
 
 mod raw {
-    use serde::{de::value::MapDeserializer, Deserialize, Serialize};
+    use serde::{de::value::MapDeserializer, Deserialize};
     use std::collections::HashMap;
 
-    #[derive(Debug, Serialize, Deserialize)]
+    #[derive(Deserialize)]
     pub struct RawArea {
         pub area_code: String,
         pub area_name: String,
@@ -151,7 +152,7 @@ mod raw {
         get_data_sheet("https://download.bls.gov/pub/time.series/ap/ap.area").await
     }
 
-    #[derive(Debug, Serialize, Deserialize)]
+    #[derive(Deserialize)]
     pub struct RawItem {
         pub item_code: String,
         pub item_name: String,
@@ -161,7 +162,7 @@ mod raw {
         get_data_sheet("https://download.bls.gov/pub/time.series/ap/ap.item").await
     }
 
-    #[derive(Debug, Deserialize)]
+    #[derive(Deserialize)]
     pub struct RawSeriesEntry {
         pub series_id: String,
         pub year: String,

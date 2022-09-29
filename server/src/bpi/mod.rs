@@ -101,7 +101,8 @@ impl BPIEngine {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BPISeriesEntry {
     series_id: String,
     year: i32,
@@ -109,7 +110,8 @@ pub struct BPISeriesEntry {
     value_sats: i32,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BPISeriesRange {
     item_code: ItemCode,
     area_code: AreaCode,
