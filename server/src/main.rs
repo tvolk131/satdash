@@ -8,6 +8,8 @@ use rocket::{
 
 mod bpi;
 
+use bpi::{AreaCode, ItemCode};
+
 const FAVICON_BYTES: &[u8] = include_bytes!("../../client/out/favicon.ico");
 const HTML_BYTES: &[u8] = include_bytes!("../../client/out/index.html");
 const JS_BUNDLE_BYTES: &[u8] = include_bytes!("../../client/out/bundle.js");
@@ -70,14 +72,20 @@ fn not_found_handler(req: &Request) -> NotFoundResponse {
     }
 }
 
-#[get("/bpi/item/<item_code>")]
+#[get("/bpi/item?<item_code>&<area_code>")]
 fn bpi_item_handler(
-    item_code: &str,
+    item_code: ItemCode,
+    area_code: AreaCode,
     bpi_engine: &State<bpi::BPIEngine>,
 ) -> rocket::response::content::Json<String> {
     rocket::response::content::Json(
-        serde_json::json!(bpi_engine.get_series_data(Some("0000"), Some(item_code), None, None))
-            .to_string(),
+        serde_json::json!(bpi_engine.get_series_data(
+            Some(&area_code),
+            Some(&item_code),
+            None,
+            None
+        ))
+        .to_string(),
     )
 }
 

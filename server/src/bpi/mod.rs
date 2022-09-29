@@ -2,6 +2,8 @@ mod btc_csv;
 mod cpi_ap;
 mod cpi_query_engine;
 
+use cpi_ap::{Area, Item, SeriesEntry};
+pub use cpi_ap::{AreaCode, ItemCode};
 use serde::Serialize;
 
 pub struct BPIEngine {
@@ -20,18 +22,18 @@ impl BPIEngine {
         }
     }
 
-    pub fn get_areas(&self) -> &Vec<cpi_ap::Area> {
+    pub fn get_areas(&self) -> &Vec<Area> {
         self.cpi_query_engine.get_areas()
     }
 
-    pub fn get_items(&self) -> &Vec<cpi_ap::Item> {
+    pub fn get_items(&self) -> &Vec<Item> {
         self.cpi_query_engine.get_items()
     }
 
     pub fn get_series_data(
         &self,
-        area_code_or: Option<&str>,
-        item_code_or: Option<&str>,
+        area_code_or: Option<&AreaCode>,
+        item_code_or: Option<&ItemCode>,
         start_year_or: Option<i32>,
         end_year_or: Option<i32>,
     ) -> Vec<BPISeriesEntry> {
@@ -56,8 +58,8 @@ impl BPIEngine {
                 if let Some(first_entry) = series_entries.first() {
                     if let Some(last_entry) = series_entries.last() {
                         series_ranges.push(BPISeriesRange {
-                            item_code: String::from(item.get_item_code()),
-                            area_code: String::from(area.get_area_code()),
+                            item_code: item.get_item_code().clone(),
+                            area_code: area.get_area_code().clone(),
                             start_year: first_entry.year,
                             start_month: first_entry.month,
                             end_year: last_entry.year,
@@ -71,9 +73,9 @@ impl BPIEngine {
         series_ranges
     }
 
-    fn cpi_entry_to_bpi_entry(&self, cpi_entry: &cpi_ap::SeriesEntry) -> Option<BPISeriesEntry> {
+    fn cpi_entry_to_bpi_entry(&self, cpi_entry: &SeriesEntry) -> Option<BPISeriesEntry> {
         let year = cpi_entry.get_year();
-        let month = cpi_entry.get_period();
+        let month = cpi_entry.get_month();
 
         Some(BPISeriesEntry {
             series_id: String::from(cpi_entry.get_series_id()),
@@ -99,8 +101,8 @@ pub struct BPISeriesEntry {
 
 #[derive(Debug, Serialize)]
 pub struct BPISeriesRange {
-    item_code: String,
-    area_code: String,
+    item_code: ItemCode,
+    area_code: AreaCode,
     start_year: i32,
     start_month: i32,
     end_year: i32,

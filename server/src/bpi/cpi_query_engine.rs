@@ -1,4 +1,6 @@
-use super::cpi_ap::{get_areas, get_current_series_entries, get_items, Area, Item, SeriesEntry};
+use super::cpi_ap::{
+    get_areas, get_current_series_entries, get_items, Area, AreaCode, Item, ItemCode, SeriesEntry,
+};
 
 pub struct CpiQueryEngine {
     areas: Vec<Area>,
@@ -25,8 +27,8 @@ impl CpiQueryEngine {
 
     pub fn get_series_data(
         &self,
-        area_code_or: Option<&str>,
-        item_code_or: Option<&str>,
+        area_code_or: Option<&AreaCode>,
+        item_code_or: Option<&ItemCode>,
         start_year_or: Option<i32>,
         end_year_or: Option<i32>,
     ) -> Vec<&SeriesEntry> {
@@ -71,7 +73,7 @@ impl CpiQueryEngine {
                 return entry_a_year.cmp(&entry_b_year);
             }
 
-            entry_a.get_period().cmp(&entry_b.get_period())
+            entry_a.get_month().cmp(&entry_b.get_month())
         });
 
         filtered_series_entries

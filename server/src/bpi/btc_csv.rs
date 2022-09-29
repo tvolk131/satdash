@@ -13,7 +13,7 @@ impl BTCPriceHistory {
 
         for result in rdr.deserialize() {
             let entry: BTCPriceCSVEntry = result?;
-            let mut date_parts_iter = entry.date.split("-");
+            let mut date_parts_iter = entry.date.split('-');
             let year = date_parts_iter.next().unwrap().parse::<i32>().unwrap();
             let month = date_parts_iter.next().unwrap().parse::<i32>().unwrap();
             let day = date_parts_iter.next().unwrap().parse::<i32>().unwrap();
@@ -28,10 +28,7 @@ impl BTCPriceHistory {
         let mut price_count = 0;
 
         for day in 1..31 {
-            if let Some(price) = self
-                .price_by_date
-                .get(&(year, month, day))
-            {
+            if let Some(price) = self.price_by_date.get(&(year, month, day)) {
                 price_sum += price;
                 price_count += 1;
             }
