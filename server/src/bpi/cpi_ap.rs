@@ -34,7 +34,7 @@ pub async fn get_areas() -> Result<Vec<Area>, reqwest::Error> {
         .map(|raw_areas| raw_areas.into_iter().map(Area::new_from_raw).collect())
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct ItemCode(String);
 
 impl<'a> rocket::form::FromFormField<'a> for ItemCode {
