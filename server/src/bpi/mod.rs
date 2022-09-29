@@ -9,7 +9,7 @@ use serde::Serialize;
 pub struct BPIEngine {
     cpi_query_engine: cpi_query_engine::CpiQueryEngine,
     btc_price_history: btc_csv::BTCPriceHistory,
-    computed_valid_series_ranges: Vec<BPISeriesRange>
+    computed_valid_series_ranges: Vec<BPISeriesRange>,
 }
 
 impl BPIEngine {
@@ -20,7 +20,7 @@ impl BPIEngine {
                 std::fs::File::open("./BTC-USD.csv").unwrap(),
             )
             .unwrap(),
-            computed_valid_series_ranges: Vec::new()
+            computed_valid_series_ranges: Vec::new(),
         };
 
         bpi_engine.compute_valid_series_ranges();

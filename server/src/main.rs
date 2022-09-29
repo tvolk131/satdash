@@ -75,11 +75,11 @@ fn not_found_handler(req: &Request) -> NotFoundResponse {
 #[get("/bpi/item?<item_code>&<area_code>")]
 fn bpi_item_handler(
     item_code: ItemCode,
-    area_code: AreaCode,
+    area_code: Option<AreaCode>,
     bpi_engine: &State<bpi::BPIEngine>,
 ) -> rocket::response::content::Json<String> {
     rocket::response::content::Json(
-        serde_json::json!(bpi_engine.get_series_data(&item_code, Some(&area_code), None, None))
+        serde_json::json!(bpi_engine.get_series_data(&item_code, area_code.as_ref(), None, None))
             .to_string(),
     )
 }
