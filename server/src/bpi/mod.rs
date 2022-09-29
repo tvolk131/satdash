@@ -9,17 +9,23 @@ use serde::Serialize;
 pub struct BPIEngine {
     cpi_query_engine: cpi_query_engine::CpiQueryEngine,
     btc_price_history: btc_csv::BTCPriceHistory,
+    computed_valid_series_ranges: Vec<BPISeriesRange>
 }
 
 impl BPIEngine {
     pub async fn new() -> Self {
-        Self {
+        let mut bpi_engine = Self {
             cpi_query_engine: cpi_query_engine::CpiQueryEngine::new().await,
             btc_price_history: btc_csv::BTCPriceHistory::new_from_reader(
                 std::fs::File::open("./BTC-USD.csv").unwrap(),
             )
             .unwrap(),
-        }
+            computed_valid_series_ranges: Vec::new()
+        };
+
+        bpi_engine.compute_valid_series_ranges();
+
+        bpi_engine
     }
 
     pub fn get_areas(&self) -> &Vec<Area> {
@@ -44,7 +50,11 @@ impl BPIEngine {
             .collect()
     }
 
-    pub fn get_valid_series_ranges(&self) -> Vec<BPISeriesRange> {
+    pub fn get_valid_series_ranges(&self) -> &Vec<BPISeriesRange> {
+        &self.computed_valid_series_ranges
+    }
+
+    fn compute_valid_series_ranges(&mut self) {
         let mut series_ranges = Vec::new();
 
         for item in self.get_items() {
@@ -70,7 +80,7 @@ impl BPIEngine {
             }
         }
 
-        series_ranges
+        self.computed_valid_series_ranges = series_ranges;
     }
 
     fn cpi_entry_to_bpi_entry(&self, cpi_entry: &SeriesEntry) -> Option<BPISeriesEntry> {
