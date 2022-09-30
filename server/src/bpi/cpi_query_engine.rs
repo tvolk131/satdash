@@ -16,11 +16,19 @@ impl CpiQueryEngine {
         let mut series_entries_by_item_and_area_code = HashMap::new();
 
         for series_entry in get_current_series_entries().await.unwrap() {
-            let item_and_area_code_key = (series_entry.get_item_code().clone(), series_entry.get_area_code().clone());
+            let item_and_area_code_key = (
+                series_entry.get_item_code().clone(),
+                series_entry.get_area_code().clone(),
+            );
 
             if !series_entries_by_item_and_area_code.contains_key(&item_and_area_code_key) {
-                series_entries_by_item_and_area_code
-                    .insert((series_entry.get_item_code().clone(), series_entry.get_area_code().clone()), Vec::new());
+                series_entries_by_item_and_area_code.insert(
+                    (
+                        series_entry.get_item_code().clone(),
+                        series_entry.get_area_code().clone(),
+                    ),
+                    Vec::new(),
+                );
             }
 
             // Note: unwrap is safe here because of the check above.
@@ -66,28 +74,30 @@ impl CpiQueryEngine {
         start_year_or: Option<i32>,
         end_year_or: Option<i32>,
     ) -> Vec<&SeriesEntry> {
-        let filtered_series_entries: Vec<&SeriesEntry> =
-            match self.series_entries_by_item_and_area_code.get(&(item_code, area_code)) {
-                Some(item_entries) => item_entries
-                    .iter()
-                    .filter(|series_entry| {
-                        if let Some(start_year) = start_year_or {
-                            if series_entry.get_year() < start_year {
-                                return false;
-                            }
+        let filtered_series_entries: Vec<&SeriesEntry> = match self
+            .series_entries_by_item_and_area_code
+            .get(&(item_code, area_code))
+        {
+            Some(item_entries) => item_entries
+                .iter()
+                .filter(|series_entry| {
+                    if let Some(start_year) = start_year_or {
+                        if series_entry.get_year() < start_year {
+                            return false;
                         }
+                    }
 
-                        if let Some(end_year) = end_year_or {
-                            if series_entry.get_year() > end_year {
-                                return false;
-                            }
+                    if let Some(end_year) = end_year_or {
+                        if series_entry.get_year() > end_year {
+                            return false;
                         }
+                    }
 
-                        true
-                    })
-                    .collect(),
-                None => return Vec::new(),
-            };
+                    true
+                })
+                .collect(),
+            None => return Vec::new(),
+        };
 
         filtered_series_entries
     }

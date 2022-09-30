@@ -79,8 +79,7 @@ fn bpi_item_handler(
     bpi_engine: &State<bpi::BPIEngine>,
 ) -> rocket::response::content::Json<String> {
     rocket::response::content::Json(
-        serde_json::json!(bpi_engine.get_series_data(item_code, area_code, None, None))
-            .to_string(),
+        serde_json::json!(bpi_engine.get_series_data(item_code, area_code, None, None)).to_string(),
     )
 }
 
