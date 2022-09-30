@@ -14,6 +14,7 @@ import {ErrorWidget} from './widgets/errorWidget';
 import {getBitcoinPrice, getBitcoinBlockHeight} from './api';
 import {InflationRateWidget} from './widgets/inflationRateWidget';
 import {HalvingCountdownWidget} from './widgets/halvingCountdownWidget';
+import {BPIDatasetExplorer} from './BPIDatasetExplorer';
 
 const useStyles = makeStyles((theme: Theme) =>
   ({
@@ -168,6 +169,7 @@ const SubApp = () => {
           </Box>
         </div>
       </div>
+      <BPIDatasetExplorer/>
       <Paper style={{position: 'fixed', bottom: 0, right: 0, margin: '20px'}}>
         <Typography
           variant={'h5'}
