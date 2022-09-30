@@ -17,7 +17,7 @@ impl BPIEngine {
         let mut bpi_engine = Self {
             cpi_query_engine: cpi_query_engine::CpiQueryEngine::new().await,
             btc_price_history: btc_csv::BTCPriceHistory::new_from_reader(
-                std::fs::File::open("./BTC-USD.csv").unwrap(),
+                include_bytes!("../../BTC-USD.csv") as &[u8],
             )
             .unwrap(),
             computed_valid_series_ranges: Vec::new(),
