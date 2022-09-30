@@ -8,7 +8,7 @@ import {
   ValueAxis,
   LineSeries,
   Title,
-  Legend,
+  Legend
 } from '@devexpress/dx-react-chart-material-ui';
 import {scaleLog} from 'd3-scale';
 import {Animation, ValueScale} from '@devexpress/dx-react-chart';
@@ -32,18 +32,25 @@ const getValidAreasAndItemsBasedOnDatasets = (
   });
 
   let validItemCodes = (items || []).map((item) => item.itemCode);
-  if (selectedAreaCode != undefined) {
-    validItemCodes = datasets.filter((dataset) => dataset.areaCode === selectedAreaCode).map((dataset) => dataset.itemCode);
+  if (selectedAreaCode !== undefined) {
+    validItemCodes = datasets
+      .filter((dataset) => dataset.areaCode === selectedAreaCode)
+      .map((dataset) => dataset.itemCode);
   }
   validItemCodes = validItemCodes.filter((itemCode) => !deadItemCodes.has(itemCode));
 
   let validAreaCodes = (areas || []).map((area) => area.areaCode);
-  if (selectedItemCode != undefined) {
-    validAreaCodes = datasets.filter((dataset) => dataset.itemCode === selectedItemCode).map((dataset) => dataset.areaCode);
+  if (selectedItemCode !== undefined) {
+    validAreaCodes = datasets
+      .filter((dataset) => dataset.itemCode === selectedItemCode)
+      .map((dataset) => dataset.areaCode);
   }
   validAreaCodes = validAreaCodes.filter((areaCode) => !deadAreaCodes.has(areaCode));
 
-  return [(areas || []).filter((area) => validAreaCodes.includes(area.areaCode)), (items || []).filter((item) => validItemCodes.includes(item.itemCode))];
+  return [
+    (areas || []).filter((area) => validAreaCodes.includes(area.areaCode)),
+    (items || []).filter((item) => validItemCodes.includes(item.itemCode))
+  ];
 };
 
 const numberToMonth = (num: number): string => {
@@ -211,7 +218,7 @@ export const BPIDatasetExplorer = () => {
               }))}
             >
               <ArgumentAxis tickFormat={() => (tick) => {
-                const totalMonths = parseInt(tick);
+                const totalMonths = parseInt(tick, 10);
                 let month = totalMonths % 12;
                 if (month === 0) {
                   month = 12;
@@ -220,7 +227,12 @@ export const BPIDatasetExplorer = () => {
 
                 return `${numberToMonth(month)} ${year}`;
               }} />
-              {displayInLogScale && <ValueScale factory={() => scaleLog().base(2)} modifyDomain={(domain) => [Math.min(domain[0], 64), domain[1]]} />}
+              {
+                displayInLogScale &&
+                  <ValueScale
+                    factory={() => scaleLog().base(2)} modifyDomain={(domain) => [Math.min(domain[0], 64), domain[1]]}
+                  />
+              }
               <ValueAxis
                 labelComponent={(props) => (
                   <ValueAxis.Label
