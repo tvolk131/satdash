@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-#[derive(Serialize, PartialEq, Clone)]
+#[derive(Serialize, PartialEq, Eq, Clone, Hash)]
 pub struct AreaCode(String);
 
 impl<'a> rocket::form::FromFormField<'a> for AreaCode {
