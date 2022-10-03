@@ -178,8 +178,8 @@ export const BPIDatasetExplorer = () => {
             onChange={(e) => setSelectedAreaCode(e.target.value)}
           >
             {
-              validAreas.map((area) => (
-                <MenuItem value={area.areaCode}>{area.areaName}</MenuItem>
+              validAreas.map((area, index) => (
+                <MenuItem value={area.areaCode} key={index}>{area.areaName}</MenuItem>
               ))
             }
           </Select>
@@ -202,8 +202,8 @@ export const BPIDatasetExplorer = () => {
             onChange={(e) => setSelectedItemCode(e.target.value)}
           >
             {
-              validItems.map((item) => (
-                <MenuItem value={item.itemCode}>{item.itemName}</MenuItem>
+              validItems.map((item, index) => (
+                <MenuItem value={item.itemCode} key={index}>{item.itemName}</MenuItem>
               ))
             }
           </Select>
@@ -253,7 +253,7 @@ export const BPIDatasetExplorer = () => {
                 text={`${items?.find((item) => item.itemCode === selectedItemCode)?.itemName} in ${areas?.find((area) => area.areaCode === selectedAreaCode)?.areaName}`}
                 textComponent={TitleText}
               />
-              <Animation />
+              <Animation/>
             </Chart>
         }
         {
