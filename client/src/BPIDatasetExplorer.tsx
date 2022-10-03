@@ -8,7 +8,8 @@ import {
   ValueAxis,
   LineSeries,
   Title,
-  Legend
+  Legend,
+  ZoomAndPan
 } from '@devexpress/dx-react-chart-material-ui';
 import {scaleLog} from 'd3-scale';
 import {Animation, ValueScale} from '@devexpress/dx-react-chart';
@@ -246,6 +247,7 @@ export const BPIDatasetExplorer = () => {
                 valueField='valueSats'
                 argumentField='totalMonths'
               />
+              <ZoomAndPan/>
               <Legend position='bottom' rootComponent={Root} itemComponent={Item} labelComponent={Label} />
               <Title
                 text={`${items?.find((item) => item.itemCode === selectedItemCode)?.itemName} in ${areas?.find((area) => area.areaCode === selectedAreaCode)?.areaName}`}
