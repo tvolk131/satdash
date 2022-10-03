@@ -4,7 +4,7 @@ mod cpi_query_engine;
 
 use cpi_ap::{Area, Item, SeriesEntry};
 pub use cpi_ap::{AreaCode, ItemCode};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 pub struct BPIEngine {
     cpi_query_engine: cpi_query_engine::CpiQueryEngine,
@@ -40,11 +40,11 @@ impl BPIEngine {
         &self,
         item_code: ItemCode,
         area_code: AreaCode,
-        start_year_or: Option<i32>,
-        end_year_or: Option<i32>,
+        start_or: &Option<MonthAndYear>,
+        end_or: &Option<MonthAndYear>,
     ) -> Vec<BPISeriesEntry> {
         self.cpi_query_engine
-            .get_series_data(item_code, area_code, start_year_or, end_year_or)
+            .get_series_data(item_code, area_code, start_or, end_or)
             .iter()
             .filter_map(|entry| self.cpi_entry_to_bpi_entry(entry))
             .collect()
@@ -62,8 +62,8 @@ impl BPIEngine {
                 let series_entries = self.get_series_data(
                     item.get_item_code().clone(),
                     area.get_area_code().clone(),
-                    None,
-                    None,
+                    &None,
+                    &None,
                 );
                 if let Some(first_entry) = series_entries.first() {
                     if let Some(last_entry) = series_entries.last() {
@@ -119,4 +119,25 @@ pub struct BPISeriesRange {
     start_month: i32,
     end_year: i32,
     end_month: i32,
+}
+
+#[derive(Deserialize)]
+pub struct MonthAndYear {
+    year: i32,
+    /// Number representing a month, with 0 being January and 11 being December.
+    month: i32,
+}
+
+impl MonthAndYear {
+    pub fn new(year: i32, month: i32) -> Self {
+        Self { year, month }
+    }
+
+    pub fn get_year(&self) -> i32 {
+        self.year
+    }
+
+    pub fn get_month(&self) -> i32 {
+        self.month
+    }
 }

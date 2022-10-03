@@ -8,10 +8,21 @@ export const getBitcoinBlockHeight = async (): Promise<number> => {
   return (await axios.get('https://blockchain.info/q/getblockcount')).data as number;
 };
 
-export const getBPIItemData = async (itemCode: string, areaCode?: string): Promise<BPISeriesEntry[]> => {
+export const getBPIItemData = async (
+  itemCode: string,
+  areaCode?: string,
+  startYear?: number,
+  startMonth?: number,
+  endYear?: number,
+  endMonth?: number
+): Promise<BPISeriesEntry[]> => {
   return (await axios.get('/api/bpi/item', {params: {
     item_code: itemCode,
-    area_code: areaCode
+    area_code: areaCode,
+    start_year: startYear,
+    start_month: startMonth,
+    end_year: endYear,
+    end_month: endMonth
   }})).data as any;
 };
 

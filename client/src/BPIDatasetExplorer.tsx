@@ -1,4 +1,15 @@
-import {Button, CircularProgress, FormControl, InputLabel, MenuItem, Paper, Select, Switch, Typography} from '@mui/material';
+import {
+  Button,
+  ButtonGroup,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Switch,
+  Typography
+} from '@mui/material';
 import * as React from 'react';
 import {useState, useEffect} from 'react';
 import {getBPIItemData, getBPIDatasets, getBPIAreas, getBPIItems, BPISeriesEntry, BPISeriesRange, BPIArea, BPIItem} from './api';
@@ -99,6 +110,9 @@ export const BPIDatasetExplorer = () => {
 
   const [[validAreas, validItems], setValidAreasAndItems] = useState<[BPIArea[], BPIItem[]]>([[], []]);
 
+  // The number of past years to show data for. Undefined means we should show all data.
+  const [currentDataSlice, setCurrentDataSlice] = useState<undefined | 1 | 5>(undefined);
+
   useEffect(() => {
     const datasetsPromise = getBPIDatasets()
       .then((datasets) => setDatasets(datasets))
@@ -120,14 +134,25 @@ export const BPIDatasetExplorer = () => {
     if (selectedAreaCode && selectedItemCode) {
       setLoadingCurrentData(true);
 
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+
+      let startYear: number | undefined;
+      let startMonth: number | undefined;
+      if (currentDataSlice) {
+        startYear = currentYear - currentDataSlice;
+        startMonth = currentMonth
+      }
+
       // TODO - Use an observable instead of a promise here to prevent
       // wonky behavior where an earlier promise finishes after a later one.
-      getBPIItemData(selectedItemCode, selectedAreaCode)
+      getBPIItemData(selectedItemCode, selectedAreaCode, startYear, startMonth)
         .then((data) => setCurrentData(data))
         .catch(() => setCurrentData(null))
         .finally(() => setLoadingCurrentData(false));
     }
-  }, [selectedAreaCode, selectedItemCode]);
+  }, [selectedAreaCode, selectedItemCode, currentDataSlice]);
 
   useEffect(() => {
     setValidAreasAndItems(getValidAreasAndItemsBasedOnDatasets(
@@ -208,12 +233,32 @@ export const BPIDatasetExplorer = () => {
             }
           </Select>
         </FormControl>
+        <ButtonGroup variant={'contained'}>
+          <Button
+            onClick={() => setCurrentDataSlice(undefined)}
+            disabled={currentDataSlice === undefined}
+          >
+            Max
+          </Button>
+          <Button
+            onClick={() => setCurrentDataSlice(1)}
+            disabled={currentDataSlice === 1}
+          >
+            1 Year
+          </Button>
+          <Button
+            onClick={() => setCurrentDataSlice(5)}
+            disabled={currentDataSlice === 5}
+          >
+            5 Years
+          </Button>
+        </ButtonGroup>
       </Paper>
       <Paper>
         {
           currentData &&
             <Chart
-              data={(currentData || []).map((data) => ({
+              data={currentData.map((data) => ({
                 ...data,
                 totalMonths: (data.year * 12) + data.month
               }))}
