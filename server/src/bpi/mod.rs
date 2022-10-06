@@ -1,4 +1,4 @@
-mod btc_csv;
+mod btc_price_history;
 mod cpi_ap;
 mod cpi_query_engine;
 
@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 pub struct BPIEngine {
     cpi_query_engine: cpi_query_engine::CpiQueryEngine,
-    btc_price_history: btc_csv::BTCPriceHistory,
+    btc_price_history: btc_price_history::BTCPriceHistory,
     computed_valid_series_ranges: Vec<BPISeriesRange>,
 }
 
@@ -16,10 +16,7 @@ impl BPIEngine {
     pub async fn new() -> Self {
         let mut bpi_engine = Self {
             cpi_query_engine: cpi_query_engine::CpiQueryEngine::new().await,
-            btc_price_history: btc_csv::BTCPriceHistory::new_from_reader(include_bytes!(
-                "../../BTC-USD.csv"
-            ) as &[u8])
-            .unwrap(),
+            btc_price_history: btc_price_history::BTCPriceHistory::new().await.unwrap(),
             computed_valid_series_ranges: Vec::new(),
         };
 
