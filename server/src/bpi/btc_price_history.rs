@@ -4,9 +4,9 @@ use std::collections::HashMap;
 pub struct BTCPriceHistory {
     /// Fallback Bitcoin price data that's stored
     /// in the binary in case API data can't be loaded.
-    csv_price_by_date: HashMap<(i32, i32, i32), f64>,
+    csv_price_by_date: HashMap<(i32, u32, i32), f64>,
     /// Dynamically-loaded up-to-date Bitcoin price data. Used by default.
-    api_loaded_price_by_date_or: Option<HashMap<(i32, i32, i32), f64>>,
+    api_loaded_price_by_date_or: Option<HashMap<(i32, u32, i32), f64>>,
 }
 
 impl BTCPriceHistory {
@@ -34,14 +34,14 @@ impl BTCPriceHistory {
 
     /// Attempts to return API-loaded price data if available, falling
     /// back to preloaded CSV data if necessary.
-    fn get_best_dataset(&self) -> &HashMap<(i32, i32, i32), f64> {
+    fn get_best_dataset(&self) -> &HashMap<(i32, u32, i32), f64> {
         match &self.api_loaded_price_by_date_or {
             Some(api_loaded_price_by_date) => api_loaded_price_by_date,
             None => &self.csv_price_by_date,
         }
     }
 
-    pub fn get_average_price_for_month(&self, year: i32, month: i32) -> Option<f64> {
+    pub fn get_average_price_for_month(&self, year: i32, month: u32) -> Option<f64> {
         let mut price_sum = 0.0;
         let mut price_count = 0;
 
@@ -65,10 +65,10 @@ impl BTCPriceHistory {
 /// Converts a string in the format `yyyy-mm-dd` to a tuple of three numbers in the format `(year, month, day)`.
 fn convert_date_string_to_number_tuple(
     date_string: &str,
-) -> Result<(i32, i32, i32), Box<dyn std::error::Error>> {
+) -> Result<(i32, u32, i32), Box<dyn std::error::Error>> {
     let mut date_parts_iter = date_string.split('-');
     let year = date_parts_iter.next().unwrap_or_default().parse::<i32>()?;
-    let month = date_parts_iter.next().unwrap_or_default().parse::<i32>()?;
+    let month = date_parts_iter.next().unwrap_or_default().parse::<u32>()?;
     let day = date_parts_iter.next().unwrap_or_default().parse::<i32>()?;
 
     Ok((year, month, day))
@@ -82,7 +82,7 @@ struct BTCPriceCSVEntry {
 }
 
 async fn load_api_btc_price_data(
-) -> Result<HashMap<(i32, i32, i32), f64>, Box<dyn std::error::Error>> {
+) -> Result<HashMap<(i32, u32, i32), f64>, Box<dyn std::error::Error>> {
     let bitcoin_price_api_resp_string = reqwest::get(
         "https://api.statmuse.com/money/assets/64a686bd-2876-4636-bdf1-f83febe1dbb3/price?frequency=Day"
     ).await?.text().await?;

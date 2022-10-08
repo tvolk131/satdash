@@ -75,7 +75,7 @@ pub struct SeriesEntry {
     area_code: AreaCode,
     item_code: ItemCode,
     year: i32,
-    month: i32,
+    month: u32,
     value: f64,
 }
 
@@ -118,7 +118,7 @@ impl SeriesEntry {
         self.year
     }
 
-    pub fn get_month(&self) -> i32 {
+    pub fn get_month(&self) -> u32 {
         self.month
     }
 
@@ -166,6 +166,9 @@ mod raw {
     pub struct RawSeriesEntry {
         pub series_id: String,
         pub year: String,
+        /// String representation of a calendar month in the format `Mxx`.
+        /// I.e. January: `M01`, December: `M12`. Additionally, `M13`
+        /// can represent an entire calendar year.
         pub period: String,
         pub value: String,
     }
@@ -179,7 +182,7 @@ mod raw {
             &self.series_id[7..]
         }
 
-        pub fn get_period(&self) -> i32 {
+        pub fn get_period(&self) -> u32 {
             self.period[1..].parse().unwrap()
         }
     }

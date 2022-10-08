@@ -2,9 +2,10 @@ mod btc_price_history;
 mod cpi_ap;
 mod cpi_query_engine;
 
+use chrono::{Date, Utc};
 use cpi_ap::{Area, Item, SeriesEntry};
 pub use cpi_ap::{AreaCode, ItemCode};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 pub struct BPIEngine {
     cpi_query_engine: cpi_query_engine::CpiQueryEngine,
@@ -37,8 +38,8 @@ impl BPIEngine {
         &self,
         item_code: ItemCode,
         area_code: AreaCode,
-        start_or: &Option<MonthAndYear>,
-        end_or: &Option<MonthAndYear>,
+        start_or: &Option<Date<Utc>>,
+        end_or: &Option<Date<Utc>>,
     ) -> Vec<BPISeriesEntry> {
         self.cpi_query_engine
             .get_series_data(item_code, area_code, start_or, end_or)
@@ -103,7 +104,7 @@ impl BPIEngine {
 pub struct BPISeriesEntry {
     series_id: String,
     year: i32,
-    month: i32,
+    month: u32,
     value_sats: i32,
 }
 
@@ -113,28 +114,7 @@ pub struct BPISeriesRange {
     item_code: ItemCode,
     area_code: AreaCode,
     start_year: i32,
-    start_month: i32,
+    start_month: u32,
     end_year: i32,
-    end_month: i32,
-}
-
-#[derive(Deserialize)]
-pub struct MonthAndYear {
-    year: i32,
-    /// Number representing a month, with 0 being January and 11 being December.
-    month: i32,
-}
-
-impl MonthAndYear {
-    pub fn new(year: i32, month: i32) -> Self {
-        Self { year, month }
-    }
-
-    pub fn get_year(&self) -> i32 {
-        self.year
-    }
-
-    pub fn get_month(&self) -> i32 {
-        self.month
-    }
+    end_month: u32,
 }

@@ -1,7 +1,7 @@
 use super::cpi_ap::{
     get_areas, get_current_series_entries, get_items, Area, AreaCode, Item, ItemCode, SeriesEntry,
 };
-use super::MonthAndYear;
+use chrono::{Date, Datelike, Utc};
 use std::collections::HashMap;
 
 pub struct CpiQueryEngine {
@@ -72,8 +72,8 @@ impl CpiQueryEngine {
         &self,
         item_code: ItemCode,
         area_code: AreaCode,
-        start_or: &Option<MonthAndYear>,
-        end_or: &Option<MonthAndYear>,
+        start_or: &Option<Date<Utc>>,
+        end_or: &Option<Date<Utc>>,
     ) -> Vec<&SeriesEntry> {
         let filtered_series_entries: Vec<&SeriesEntry> = match self
             .series_entries_by_item_and_area_code
@@ -83,24 +83,24 @@ impl CpiQueryEngine {
                 .iter()
                 .filter(|series_entry| {
                     if let Some(start) = &start_or {
-                        if series_entry.get_year() < start.get_year() {
+                        if series_entry.get_year() < start.year() {
                             return false;
                         }
 
-                        if series_entry.get_year() == start.get_year()
-                            && series_entry.get_month() < start.get_month()
+                        if series_entry.get_year() == start.year()
+                            && series_entry.get_month() < start.month()
                         {
                             return false;
                         }
                     }
 
                     if let Some(end) = &end_or {
-                        if series_entry.get_year() > end.get_year() {
+                        if series_entry.get_year() > end.year() {
                             return false;
                         }
 
-                        if series_entry.get_year() == end.get_year()
-                            && series_entry.get_month() > end.get_month()
+                        if series_entry.get_year() == end.year()
+                            && series_entry.get_month() > end.month()
                         {
                             return false;
                         }
