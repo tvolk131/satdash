@@ -106,7 +106,7 @@ export const BPIDatasetExplorer = () => {
   const [currentData, setCurrentData] = useState<BPISeriesEntry[] | null | undefined>(undefined);
   const [loadingCurrentData, setLoadingCurrentData] = useState<boolean>(false);
 
-  const [displayInLogScale, setDisplayInLogScale] = useState<boolean>(false);
+  const [displayInLogScale, setDisplayInLogScale] = useState<boolean>(true);
 
   const [[validAreas, validItems], setValidAreasAndItems] = useState<[BPIArea[], BPIItem[]]>([[], []]);
 
