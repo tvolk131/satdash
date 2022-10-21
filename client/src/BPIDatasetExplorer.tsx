@@ -122,10 +122,9 @@ const transformItemName = (itemName: string | undefined): string | undefined => 
     [' per 500 KWH', ' (per 500 kWh)']
   ];
 
-  for (let i = 0; i < suffixUnitReplacements.length; i++) {
-    let replacement = suffixUnitReplacements[i];
-    if (itemName.endsWith(replacement[0])) {
-      return itemName.replace(replacement[0], replacement[1]);
+  for (const [match, replacement] of suffixUnitReplacements) {
+    if (itemName.endsWith(match)) {
+      return itemName.replace(match, replacement);
     }
   }
 
