@@ -95,6 +95,43 @@ const numberToMonth = (num: number): string => {
   }
 };
 
+const transformItemName = (itemName: string | undefined): string | undefined => {
+  if (itemName === undefined) {
+    return undefined;
+  }
+
+  const suffixUnitReplacements = [
+    [', per lb. (453.6 gm)', ' (per pound)'],
+    [',per lb. (453.6 gm)', ' (per pound)'],
+    [', per gallon/3.785 liters', ' (per gallon)'],
+    [', per gal. (3.8 lit)', ' (per gallon)'],
+    [' per gallon (3.785 liters)', ' (per gallon)'],
+    [', per 8 oz. (226.8 gm)', ' (per 8 ounces)'],
+    [', per 12 oz. (340.2 gm)', ' (per 12 ounces)'],
+    [', per 12 oz. (354.9 ml)', ' (per 12 ounces)'],
+    [', per 16 oz. (473.2 ml)', ' (per 16 ounces)'],
+    [', per 16 oz.', ' (per 16 ounces)'],
+    [', per 1 liter (33.8 oz)', ' (per liter)'],
+    [', per 2 liters (67.6 oz)', ' (per 2 liters)'],
+    [', per 1/2 gal. (1.9 lit)', ' (per 1/2 gallon)'],
+    [', per doz.', ' (per dozen)'],
+    [' - 40 therms', ' (per 40 therms)'],
+    [' - 100 therms', ' (per 100 therms)'],
+    [' per therm', ' (per therm)'],
+    [' per KWH', ' (per kWh)'],
+    [' per 500 KWH', ' (per 500 kWh)']
+  ];
+
+  for (let i = 0; i < suffixUnitReplacements.length; i++) {
+    let replacement = suffixUnitReplacements[i];
+    if (itemName.endsWith(replacement[0])) {
+      return itemName.replace(replacement[0], replacement[1]);
+    }
+  }
+
+  return itemName;
+};
+
 export const BPIDatasetExplorer = () => {
   const [datasets, setDatasets] = useState<BPISeriesRange[] | null | undefined>(undefined);
   const [areas, setAreas] = useState<BPIArea[] | null | undefined>(undefined);
@@ -228,7 +265,7 @@ export const BPIDatasetExplorer = () => {
           >
             {
               validItems.map((item, index) => (
-                <MenuItem value={item.itemCode} key={index}>{item.itemName}</MenuItem>
+                <MenuItem value={item.itemCode} key={index}>{transformItemName(item.itemName)}</MenuItem>
               ))
             }
           </Select>
@@ -285,14 +322,14 @@ export const BPIDatasetExplorer = () => {
                 )}
               />
               <LineSeries
-                name={items?.find((item) => item.itemCode === selectedItemCode)?.itemName}
+                name={transformItemName(items?.find((item) => item.itemCode === selectedItemCode)?.itemName)}
                 valueField='valueSats'
                 argumentField='epochTime'
               />
               <ZoomAndPan/>
               <Legend position='bottom' rootComponent={Root} itemComponent={Item} labelComponent={Label} />
               <Title
-                text={`${items?.find((item) => item.itemCode === selectedItemCode)?.itemName} in ${areas?.find((area) => area.areaCode === selectedAreaCode)?.areaName}`}
+                text={`${transformItemName(items?.find((item) => item.itemCode === selectedItemCode)?.itemName)} in ${areas?.find((area) => area.areaCode === selectedAreaCode)?.areaName}`}
                 textComponent={TitleText}
               />
               <Animation/>
