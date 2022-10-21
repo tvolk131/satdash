@@ -1,10 +1,12 @@
 mod btc_price_history;
 mod cpi_ap;
 mod cpi_query_engine;
+mod dated_series;
 
-use chrono::{Date, Utc};
-use cpi_ap::{Area, Item, SeriesEntry};
+use chrono::{Date, Datelike, Utc};
+use cpi_ap::{Area, Item};
 pub use cpi_ap::{AreaCode, ItemCode};
+use dated_series::DatedSeries;
 use serde::Serialize;
 
 pub struct BPIEngine {
@@ -38,14 +40,25 @@ impl BPIEngine {
         &self,
         item_code: ItemCode,
         area_code: AreaCode,
-        start_or: &Option<Date<Utc>>,
-        end_or: &Option<Date<Utc>>,
+        start_or: Option<Date<Utc>>,
+        end_or: Option<Date<Utc>>,
+        interpolation_interval: InterpolationInterval,
     ) -> Vec<BPISeriesEntry> {
-        self.cpi_query_engine
-            .get_series_data(item_code, area_code, start_or, end_or)
-            .iter()
-            .filter_map(|entry| self.cpi_entry_to_bpi_entry(entry))
-            .collect()
+        let cpi_item_price_series =
+            match self.cpi_query_engine.get_series_data(item_code, area_code) {
+                Some(cpi_series) => cpi_series,
+                None => return Vec::new(),
+            };
+
+        let bitcoin_price_series = self.btc_price_history.get_best_dataset();
+
+        Self::slice_bpi_series(
+            cpi_item_price_series,
+            bitcoin_price_series,
+            start_or,
+            end_or,
+            interpolation_interval,
+        )
     }
 
     pub fn get_valid_series_ranges(&self) -> &Vec<BPISeriesRange> {
@@ -60,8 +73,9 @@ impl BPIEngine {
                 let series_entries = self.get_series_data(
                     item.get_item_code().clone(),
                     area.get_area_code().clone(),
-                    &None,
-                    &None,
+                    None,
+                    None,
+                    InterpolationInterval::Daily,
                 );
                 if let Some(first_entry) = series_entries.first() {
                     if let Some(last_entry) = series_entries.last() {
@@ -81,30 +95,74 @@ impl BPIEngine {
         self.computed_valid_series_ranges = series_ranges;
     }
 
-    fn cpi_entry_to_bpi_entry(&self, cpi_entry: &SeriesEntry) -> Option<BPISeriesEntry> {
-        let year = cpi_entry.get_year();
-        let month = cpi_entry.get_month();
+    fn slice_bpi_series(
+        cpi_item_price_series: &DatedSeries,
+        bitcoin_price_series: &DatedSeries,
+        start_or: Option<Date<Utc>>,
+        end_or: Option<Date<Utc>>,
+        interpolation_interval: InterpolationInterval,
+    ) -> Vec<BPISeriesEntry> {
+        let mut start = match cpi_item_price_series.get_first_shared_date(bitcoin_price_series) {
+            Some(start) => start,
+            None => return Vec::new(),
+        };
+        if let Some(start_override) = start_or {
+            start = std::cmp::max(start, start_override);
+        }
 
-        Some(BPISeriesEntry {
-            series_id: String::from(cpi_entry.get_series_id()),
-            year,
-            month,
-            value_sats: (cpi_entry.get_value()
-                * (1.0
-                    / self
-                        .btc_price_history
-                        .get_average_price_for_month(year, month)?
-                    * 100000000.0)) as i32,
-        })
+        let mut end = match cpi_item_price_series.get_last_shared_date(bitcoin_price_series) {
+            Some(start) => start,
+            None => return Vec::new(),
+        };
+        if let Some(end_override) = end_or {
+            end = std::cmp::max(end, end_override);
+        }
+
+        if start > end {
+            return Vec::new();
+        }
+
+        Self::interpolate_dates(&start, &end, interpolation_interval)
+            .into_iter()
+            .filter_map(|date| {
+                Some(BPISeriesEntry {
+                    year: date.year(),
+                    month: date.month(),
+                    day: date.day(),
+                    value_sats: (cpi_item_price_series.get_interpolated_price(date)?
+                        * (1.0 / bitcoin_price_series.get_interpolated_price(date)? * 100000000.0))
+                        as i32,
+                })
+            })
+            .collect()
+    }
+
+    fn interpolate_dates(
+        start_date: &Date<Utc>,
+        end_date: &Date<Utc>,
+        interval: InterpolationInterval,
+    ) -> Vec<Date<Utc>> {
+        match interval {
+            InterpolationInterval::Daily => {
+                let mut dates = Vec::new();
+
+                let mut date = *start_date;
+                while &date <= end_date {
+                    dates.push(date);
+                    date += chrono::Duration::days(1);
+                }
+                dates
+            }
+        }
     }
 }
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BPISeriesEntry {
-    series_id: String,
     year: i32,
     month: u32,
+    day: u32,
     value_sats: i32,
 }
 
@@ -117,4 +175,11 @@ pub struct BPISeriesRange {
     start_month: u32,
     end_year: i32,
     end_month: u32,
+}
+
+pub enum InterpolationInterval {
+    Daily,
+    // TODO - Uncomment the values below and implement them where necessary.
+    // Weekly,
+    // Monthly
 }

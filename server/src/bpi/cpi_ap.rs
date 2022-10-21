@@ -71,7 +71,6 @@ pub async fn get_items() -> Result<Vec<Item>, reqwest::Error> {
 }
 
 pub struct SeriesEntry {
-    series_id: String,
     area_code: AreaCode,
     item_code: ItemCode,
     year: i32,
@@ -85,6 +84,10 @@ impl SeriesEntry {
         let item_code = raw_series_entry.get_item_code().to_string();
         let month = raw_series_entry.get_period();
 
+        if !(1..=12).contains(&month) {
+            panic!("Month must be between 1 and 12! Got: {}", month);
+        }
+
         // A few of the CPI entries have a '-' for their value, indicating
         // that there is no data for that time period. We can simply filter
         // these out.
@@ -93,17 +96,12 @@ impl SeriesEntry {
         }
 
         Some(Self {
-            series_id: raw_series_entry.series_id,
             area_code: AreaCode(area_code),
             item_code: ItemCode(item_code),
             year: raw_series_entry.year.parse::<i32>().unwrap(),
             month,
             value: raw_series_entry.value.parse().unwrap(),
         })
-    }
-
-    pub fn get_series_id(&self) -> &str {
-        &self.series_id
     }
 
     pub fn get_area_code(&self) -> &AreaCode {

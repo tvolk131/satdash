@@ -103,8 +103,15 @@ fn bpi_item_handler(
     };
 
     rocket::response::content::Json(
-        serde_json::json!(bpi_engine.get_series_data(item_code, area_code, &start_or, &end_or))
-            .to_string(),
+        // TODO - Don't hardcode to `Daily` - set this based on a request parameter.
+        serde_json::json!(bpi_engine.get_series_data(
+            item_code,
+            area_code,
+            start_or,
+            end_or,
+            bpi::InterpolationInterval::Daily
+        ))
+        .to_string(),
     )
 }
 

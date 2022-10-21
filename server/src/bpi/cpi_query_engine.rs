@@ -1,7 +1,8 @@
 use super::cpi_ap::{
-    get_areas, get_current_series_entries, get_items, Area, AreaCode, Item, ItemCode, SeriesEntry,
+    get_areas, get_current_series_entries, get_items, Area, AreaCode, Item, ItemCode,
 };
-use chrono::{Date, Datelike, Utc};
+use super::dated_series::DatedSeries;
+use chrono::{TimeZone, Utc};
 use std::collections::HashMap;
 
 pub struct CpiQueryEngine {
@@ -9,7 +10,7 @@ pub struct CpiQueryEngine {
     items: Vec<Item>,
     /// Contains all series entries, split by item code.
     /// Within each item code, all series entries are sorted chronologically.
-    series_entries_by_item_and_area_code: HashMap<(ItemCode, AreaCode), Vec<SeriesEntry>>,
+    series_by_item_and_area_code: HashMap<(ItemCode, AreaCode), DatedSeries>,
 }
 
 impl CpiQueryEngine {
@@ -56,7 +57,22 @@ impl CpiQueryEngine {
         Self {
             areas: get_areas().await.unwrap(),
             items: get_items().await.unwrap(),
-            series_entries_by_item_and_area_code,
+            series_by_item_and_area_code: series_entries_by_item_and_area_code
+                .into_iter()
+                .map(|(key, series_entries)| {
+                    let series_map = series_entries
+                        .into_iter()
+                        .map(|entry| {
+                            (
+                                Utc.ymd(entry.get_year(), entry.get_month(), 1), // TODO - Not sure if this should default to the 1st day of the month... Might make more sense to default to the middle of the month.
+                                entry.get_value(),
+                            )
+                        })
+                        .collect();
+
+                    (key, DatedSeries::new(series_map))
+                })
+                .collect(),
         }
     }
 
@@ -72,46 +88,8 @@ impl CpiQueryEngine {
         &self,
         item_code: ItemCode,
         area_code: AreaCode,
-        start_or: &Option<Date<Utc>>,
-        end_or: &Option<Date<Utc>>,
-    ) -> Vec<&SeriesEntry> {
-        let filtered_series_entries: Vec<&SeriesEntry> = match self
-            .series_entries_by_item_and_area_code
+    ) -> Option<&DatedSeries> {
+        self.series_by_item_and_area_code
             .get(&(item_code, area_code))
-        {
-            Some(item_entries) => item_entries
-                .iter()
-                .filter(|series_entry| {
-                    if let Some(start) = &start_or {
-                        if series_entry.get_year() < start.year() {
-                            return false;
-                        }
-
-                        if series_entry.get_year() == start.year()
-                            && series_entry.get_month() < start.month()
-                        {
-                            return false;
-                        }
-                    }
-
-                    if let Some(end) = &end_or {
-                        if series_entry.get_year() > end.year() {
-                            return false;
-                        }
-
-                        if series_entry.get_year() == end.year()
-                            && series_entry.get_month() > end.month()
-                        {
-                            return false;
-                        }
-                    }
-
-                    true
-                })
-                .collect(),
-            None => return Vec::new(),
-        };
-
-        filtered_series_entries
     }
 }

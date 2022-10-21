@@ -260,18 +260,15 @@ export const BPIDatasetExplorer = () => {
             <Chart
               data={currentData.map((data) => ({
                 ...data,
-                totalMonths: (data.year * 12) + data.month
+                epochTime: (new Date(`${data.month}/${data.day}/${data.year}`)).valueOf()
               }))}
             >
               <ArgumentAxis tickFormat={() => (tick) => {
-                const totalMonths = parseInt(tick, 10);
-                let month = totalMonths % 12;
-                if (month === 0) {
-                  month = 12;
-                }
-                const year = (totalMonths - month) / 12;
+                const epochTime = parseInt(tick, 10);
+                const date = new Date(epochTime);
+                const [month, day, year] = date.toLocaleDateString().split('/');
 
-                return `${numberToMonth(month)} ${year}`;
+                return `${numberToMonth(parseInt(month, 10))} ${year}`;
               }} />
               {
                 displayInLogScale &&
@@ -290,7 +287,7 @@ export const BPIDatasetExplorer = () => {
               <LineSeries
                 name={items?.find((item) => item.itemCode === selectedItemCode)?.itemName}
                 valueField='valueSats'
-                argumentField='totalMonths'
+                argumentField='epochTime'
               />
               <ZoomAndPan/>
               <Legend position='bottom' rootComponent={Root} itemComponent={Item} labelComponent={Label} />

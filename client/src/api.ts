@@ -27,9 +27,9 @@ export const getBPIItemData = async (
 };
 
 export interface BPISeriesEntry {
-  seriesId: string;
   year: number;
   month: number;
+  day: number;
   valueSats: number;
 }
 
