@@ -132,6 +132,56 @@ const transformItemName = (itemName: string | undefined): string | undefined => 
   return itemName;
 };
 
+const parseLabelPropText = (propText: string | number): number | undefined => {
+  if (typeof propText === 'number') {
+    return propText;
+  }
+
+  if (propText.length === 0) {
+    return undefined;
+  }
+
+  propText = propText.split(',').join('');
+  let num = parseInt(propText, 10);
+  if (`${num}`.length < propText.length) {
+    const lastChar = propText[propText.length - 1];
+    if (lastChar === 'k') {
+      num *= 1e3;
+    } else if (lastChar === 'M') {
+      num *= 1e6;
+    } else if (lastChar === 'G') {
+      num *= 1e9;
+    } else {
+      throw Error(`Unknown number multiplier character: ${lastChar}`);
+    }
+  }
+  return num;
+};
+
+const satAmountToLabelText = (satAmount: number | undefined): string => {
+  if (satAmount === undefined) {
+    return '';
+  }
+
+  if (satAmount < 0) {
+    return `-${satAmountToLabelText(-satAmount)}`;
+  }
+
+  if (satAmount >= 1e8) {
+    return `₿${roundNumberToThreeDecimalPlaces(satAmount / 1e8)}`;
+  } else if (satAmount >= 1e6) {
+    return `${roundNumberToThreeDecimalPlaces(satAmount / 1e6)} Msats`;
+  } else if (satAmount >= 1e3) {
+    return `${roundNumberToThreeDecimalPlaces(satAmount / 1e3)} Ksats`;
+  } else {
+    return `${satAmount} sats`;
+  }
+};
+
+const roundNumberToThreeDecimalPlaces = (num: number): number => {
+  return Math.round(num * 1000) / 1000;
+};
+
 export const BPIDatasetExplorer = () => {
   const [datasets, setDatasets] = useState<BPISeriesRange[] | null | undefined>(undefined);
   const [areas, setAreas] = useState<BPIArea[] | null | undefined>(undefined);
@@ -144,6 +194,7 @@ export const BPIDatasetExplorer = () => {
   const [loadingCurrentData, setLoadingCurrentData] = useState<boolean>(false);
 
   const [displayInLogScale, setDisplayInLogScale] = useState<boolean>(true);
+  const [logBase, setLogBase] = useState<2 | 10>(2);
 
   const [[validAreas, validItems], setValidAreasAndItems] = useState<[BPIArea[], BPIItem[]]>([[], []]);
 
@@ -290,6 +341,22 @@ export const BPIDatasetExplorer = () => {
             5 Years
           </Button>
         </ButtonGroup>
+        <div style={{margin: '0 10px'}}>
+          <ButtonGroup disabled={!displayInLogScale} variant={'contained'}>
+            <Button
+              onClick={() => setLogBase(2)}
+              disabled={logBase === 2}
+            >
+              Base 2
+            </Button>
+            <Button
+              onClick={() => setLogBase(10)}
+              disabled={logBase === 10}
+            >
+              Base 10
+            </Button>
+          </ButtonGroup>
+        </div>
       </Paper>
       <Paper>
         {
@@ -310,14 +377,14 @@ export const BPIDatasetExplorer = () => {
               {
                 displayInLogScale &&
                   <ValueScale
-                    factory={() => scaleLog().base(2)} modifyDomain={(domain) => [Math.min(domain[0], 64), domain[1]]}
+                    factory={() => scaleLog().base(logBase)}
                   />
               }
               <ValueAxis
                 labelComponent={(props) => (
                   <ValueAxis.Label
                     {...props}
-                    text={`${props.text} sats`}
+                    text={satAmountToLabelText(parseLabelPropText(props.text))}
                   />
                 )}
               />
