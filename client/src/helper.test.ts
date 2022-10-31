@@ -82,10 +82,13 @@ describe('formatNumber', () => {
     expect(formatNumber(12345, 'fullNumberWithCommas')).toEqual('12,345');
     expect(formatNumber(123456, 'fullNumberWithCommas')).toEqual('123,456');
     expect(formatNumber(1234567, 'fullNumberWithCommas')).toEqual('1,234,567');
-    expect(formatNumber(12345678, 'fullNumberWithCommas')).toEqual('12,345,678');
-    expect(formatNumber(123456789, 'fullNumberWithCommas')).toEqual('123,456,789');
+    expect(formatNumber(12345678, 'fullNumberWithCommas'))
+      .toEqual('12,345,678');
+    expect(formatNumber(123456789, 'fullNumberWithCommas'))
+      .toEqual('123,456,789');
 
-    expect(formatNumber(123456.789, 'fullNumberWithCommas')).toEqual('123,456.789');
+    expect(formatNumber(123456.789, 'fullNumberWithCommas'))
+      .toEqual('123,456.789');
   });
 
   it('returns proper number with word', () => {
@@ -102,40 +105,58 @@ describe('formatNumber', () => {
     expect(formatNumber(123456789, 'numberAndWord')).toEqual('123.46 million');
     expect(formatNumber(1234567891, 'numberAndWord')).toEqual('1.23 billion');
     expect(formatNumber(12345678912, 'numberAndWord')).toEqual('12.35 billion');
-    expect(formatNumber(123456789123, 'numberAndWord')).toEqual('123.46 billion');
-    expect(formatNumber(1234567891234, 'numberAndWord')).toEqual('1.23 trillion');
-    expect(formatNumber(12345678912345, 'numberAndWord')).toEqual('12.35 trillion');
-    expect(formatNumber(123456789123456, 'numberAndWord')).toEqual('123.46 trillion');
-    expect(formatNumber(1234567891234567, 'numberAndWord')).toEqual('1.23 quadrillion');
-    expect(formatNumber(12345678912345678, 'numberAndWord')).toEqual('12.35 quadrillion');
+    expect(formatNumber(123456789123, 'numberAndWord'))
+      .toEqual('123.46 billion');
+    expect(formatNumber(1234567891234, 'numberAndWord'))
+      .toEqual('1.23 trillion');
+    expect(formatNumber(12345678912345, 'numberAndWord'))
+      .toEqual('12.35 trillion');
+    expect(formatNumber(123456789123456, 'numberAndWord'))
+      .toEqual('123.46 trillion');
+    expect(formatNumber(1234567891234567, 'numberAndWord'))
+      .toEqual('1.23 quadrillion');
+    expect(formatNumber(12345678912345678, 'numberAndWord'))
+      .toEqual('12.35 quadrillion');
   });
 
   it('number with word handles decimal numbers', () => {
     expect(formatNumber(0.1234, 'numberAndWord')).toEqual('0.12');
-    expect(formatNumber(123456.789, 'numberAndWord')).toEqual('123.46 thousand');
+    expect(formatNumber(123456.789, 'numberAndWord'))
+      .toEqual('123.46 thousand');
   });
 });
 
 describe('getDurationEstimateFromBlockCount', () => {
   it('returns correct value for many orders of magnitude', () => {
     expect(getDurationEstimateFromBlockCount(1)).toEqual('10 minutes');
-    expect(getDurationEstimateFromBlockCount(10)).toEqual('1 hour and 40 minutes');
-    expect(getDurationEstimateFromBlockCount(100)).toEqual('16 hours and 40 minutes');
-    expect(getDurationEstimateFromBlockCount(1000)).toEqual('6 days, 22 hours and 40 minutes');
-    expect(getDurationEstimateFromBlockCount(10000)).toEqual('69 days, 10 hours and 40 minutes');
-    expect(getDurationEstimateFromBlockCount(100000)).toEqual('1 year, 329 days and 10 hours');
-    expect(getDurationEstimateFromBlockCount(1000000)).toEqual('19 years, 9 days and 10 hours');
-    expect(getDurationEstimateFromBlockCount(10000000)).toEqual('190 years, 94 days and 10 hours');
+    expect(getDurationEstimateFromBlockCount(10))
+      .toEqual('1 hour and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(100))
+      .toEqual('16 hours and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(1000))
+      .toEqual('6 days, 22 hours and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(10000))
+      .toEqual('69 days, 10 hours and 40 minutes');
+    expect(getDurationEstimateFromBlockCount(100000))
+      .toEqual('1 year, 329 days and 10 hours');
+    expect(getDurationEstimateFromBlockCount(1000000))
+      .toEqual('19 years, 9 days and 10 hours');
+    expect(getDurationEstimateFromBlockCount(10000000))
+      .toEqual('190 years, 94 days and 10 hours');
   });
 
   it('uses singular values when appropriate', () => {
-    expect(getDurationEstimateFromBlockCount(52710)).toEqual('1 year, 1 day and 1 hour');
+    expect(getDurationEstimateFromBlockCount(52710))
+      .toEqual('1 year, 1 day and 1 hour');
   });
 
   it('truncates from the left side', () => {
-    expect(getDurationEstimateFromBlockCount(52560)).toEqual('1 year, 0 days and 0 hours');
-    expect(getDurationEstimateFromBlockCount(144)).toEqual('1 day, 0 hours and 0 minutes');
-    expect(getDurationEstimateFromBlockCount(6)).toEqual('1 hour and 0 minutes');
+    expect(getDurationEstimateFromBlockCount(52560))
+      .toEqual('1 year, 0 days and 0 hours');
+    expect(getDurationEstimateFromBlockCount(144))
+      .toEqual('1 day, 0 hours and 0 minutes');
+    expect(getDurationEstimateFromBlockCount(6))
+      .toEqual('1 hour and 0 minutes');
   });
 
   it('handles zero-block input', () => {
@@ -143,19 +164,27 @@ describe('getDurationEstimateFromBlockCount', () => {
   });
 
   it('truncates to maximum of 3 units', () => {
-    expect(getDurationEstimateFromBlockCount(52559)).toEqual('364 days, 23 hours and 50 minutes');
-    expect(getDurationEstimateFromBlockCount(52560)).toEqual('1 year, 0 days and 0 hours');
+    expect(getDurationEstimateFromBlockCount(52559))
+      .toEqual('364 days, 23 hours and 50 minutes');
+    expect(getDurationEstimateFromBlockCount(52560))
+      .toEqual('1 year, 0 days and 0 hours');
   });
 });
 
 describe('getNextHalvingData', () => {
   it('returns correct value', () => {
-    expect(getNextHalvingData(0)).toEqual({blockHeight: 210000, blockReward: 25});
-    expect(getNextHalvingData(1)).toEqual({blockHeight: 210000, blockReward: 25});
-    expect(getNextHalvingData(209999)).toEqual({blockHeight: 210000, blockReward: 25});
-    expect(getNextHalvingData(210000)).toEqual({blockHeight: 420000, blockReward: 12.5});
+    expect(getNextHalvingData(0))
+      .toEqual({blockHeight: 210000, blockReward: 25});
+    expect(getNextHalvingData(1))
+      .toEqual({blockHeight: 210000, blockReward: 25});
+    expect(getNextHalvingData(209999))
+      .toEqual({blockHeight: 210000, blockReward: 25});
+    expect(getNextHalvingData(210000))
+      .toEqual({blockHeight: 420000, blockReward: 12.5});
 
-    expect(getNextHalvingData(839999)).toEqual({blockHeight: 840000, blockReward: 3.125});
-    expect(getNextHalvingData(840000)).toEqual({blockHeight: 1050000, blockReward: 1.5625});
+    expect(getNextHalvingData(839999))
+      .toEqual({blockHeight: 840000, blockReward: 3.125});
+    expect(getNextHalvingData(840000))
+      .toEqual({blockHeight: 1050000, blockReward: 1.5625});
   });
 });

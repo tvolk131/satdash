@@ -31,12 +31,15 @@ const SubApp = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const [pricePerCoin, setPricePerCoin] = useState<number | null | undefined>(undefined);
-  const [blockHeight, setBlockHeight] = useState<number | null | undefined>(undefined);
+  const [pricePerCoin, setPricePerCoin] =
+    useState<number | null | undefined>(undefined);
+  const [blockHeight, setBlockHeight] =
+    useState<number | null | undefined>(undefined);
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
-  // Used to force-update the component. The state itself isn't used for anything.
+  // Used to force-update the component.
+  // The state itself isn't used for anything.
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => updateState({}), []);
 
@@ -118,7 +121,12 @@ const SubApp = () => {
     } else if (blockHeight === undefined || pricePerCoin === undefined) {
       return <LoadingWidget/>;
     } else {
-      return <MarketCapWidget blockHeight={blockHeight} pricePerCoin={pricePerCoin}/>;
+      return (
+        <MarketCapWidget
+          blockHeight={blockHeight}
+          pricePerCoin={pricePerCoin}
+        />
+      );
     }
   })();
 
@@ -152,6 +160,9 @@ const SubApp = () => {
     halvingCountdownWidget
   ];
 
+  const lastUpdateDurationSeconds =
+    Math.floor((Date.now() - lastUpdated) / 1000);
+
   return (
     <div className={classes.root}>
       {/* This meta tag makes the mobile experience
@@ -159,7 +170,10 @@ const SubApp = () => {
       <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
       <div>
         <div>
-          <Box sx={{flexGrow: 1}} style={{maxWidth: '1500px', margin: 'auto', padding: '20px'}}>
+          <Box
+            sx={{flexGrow: 1}}
+            style={{maxWidth: '1500px', margin: 'auto', padding: '20px'}}
+          >
             <Grid container spacing={2} justifyContent={'center'}>
               {widgets.map((widget, index) => (
                 <Grid item key={index}>
@@ -176,7 +190,7 @@ const SubApp = () => {
           variant={'h5'}
           style={{padding: '10px'}}
         >
-          Last updated {Math.floor((Date.now() - lastUpdated) / 1000)} seconds ago
+          Last updated {lastUpdateDurationSeconds} seconds ago
         </Typography>
       </Paper>
       <Snackbar

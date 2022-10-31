@@ -1,12 +1,14 @@
 import axios from 'axios';
 
 export const getBitcoinPrice = async (): Promise<number> => {
-  const res = await axios.get('https://api.blockchain.com/v3/exchange/tickers/BTC-USD');
+  const res = await axios.get(
+    'https://api.blockchain.com/v3/exchange/tickers/BTC-USD');
   return res.data.last_trade_price;
 };
 
 export const getBitcoinBlockHeight = async (): Promise<number> => {
-  return (await axios.get('https://blockchain.info/q/getblockcount')).data as number;
+  const res = await axios.get('https://blockchain.info/q/getblockcount');
+  return res.data as number;
 };
 
 export const getBPIItemData = async (

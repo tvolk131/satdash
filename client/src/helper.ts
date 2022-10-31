@@ -1,7 +1,8 @@
 // A Bitcoin halving occurs every 210000 blocks.
 const blockHalvingCount = 210000;
 
-export const getMinedBitcoinAmountFromBlockHeight = (blockHeight: number): number => {
+export const getMinedBitcoinAmountFromBlockHeight =
+(blockHeight: number): number => {
   let bitcoinAmount = 0;
   let blockReward = 50;
 
@@ -70,7 +71,13 @@ export const formatNumber =
     return `${whole}${fraction ? `.${fraction}` : ''}`;
   }
 
-  const wordSuffixes = ['thousand', 'million', 'billion', 'trillion', 'quadrillion'];
+  const wordSuffixes = [
+    'thousand',
+    'million',
+    'billion',
+    'trillion',
+    'quadrillion'
+  ];
 
   let wordSuffixIndex = -1;
 
@@ -152,7 +159,8 @@ const getDurationEstimateStringChunks = (blockCount: number): string[] => {
   return stringChunks;
 };
 
-export const getDurationEstimateFromBlockCount = (blockCount: number): string => {
+export const getDurationEstimateFromBlockCount =
+(blockCount: number): string => {
   const stringChunks = getDurationEstimateStringChunks(blockCount);
 
   if (stringChunks.length === 1) {

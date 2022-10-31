@@ -9,7 +9,10 @@ export const LoadingWidget = () => {
       <Card style={{height: '400px', width: '400px', position: 'relative'}}>
         <CircularProgress
           size={spinnerSize}
-          style={{position: 'absolute', padding: `${(400 - spinnerSize) / 2}px`}}
+          style={{
+            position: 'absolute',
+            padding: `${(400 - spinnerSize) / 2}px`
+          }}
         />
       </Card>
     </div>

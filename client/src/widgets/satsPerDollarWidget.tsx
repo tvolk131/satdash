@@ -10,10 +10,16 @@ export const SatsPerDollarWidget = (props: SatsPerDollarWidgetProps) => {
     <div style={{padding: '10px'}}>
       <Paper style={{height: '400px', width: '400px'}}>
         <div style={{padding: '124px 0'}}>
-          <Typography variant={'h4'} style={{padding: '10px', textAlign: 'center'}}>
+          <Typography
+            variant={'h4'}
+            style={{padding: '10px', textAlign: 'center'}}
+          >
             Sats / Dollar
           </Typography>
-          <Typography variant={'h2'} style={{padding: '10px', textAlign: 'center'}}>
+          <Typography
+            variant={'h2'}
+            style={{padding: '10px', textAlign: 'center'}}
+          >
             {Math.round(1 / props.pricePerCoin * 100000000)}
           </Typography>
         </div>
