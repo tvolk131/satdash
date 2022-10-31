@@ -1,20 +1,20 @@
-import {blue, teal} from '@mui/material/colors';
-import {createTheme, ThemeProvider, Theme} from '@mui/material/styles';
-import {makeStyles} from '@mui/styles';
 import * as React from 'react';
-import {useState, useEffect, useCallback} from 'react';
-import {Snackbar, Box, Grid, Typography, Paper} from '@mui/material';
-import {TotalSupplyPieChartWidget} from './widgets/totalSupplyPieChartWidget';
+import {Box, Grid, Paper, Snackbar, Typography} from '@mui/material';
+import {Theme, ThemeProvider, createTheme} from '@mui/material/styles';
+import {blue, teal} from '@mui/material/colors';
+import {getBitcoinBlockHeight, getBitcoinPrice} from './api';
+import {useCallback, useEffect, useState} from 'react';
+import {BPIDatasetExplorer} from './BPIDatasetExplorer';
 import {BlockHeightWidget} from './widgets/blockHeightWidget';
+import {ErrorWidget} from './widgets/errorWidget';
+import {HalvingCountdownWidget} from './widgets/halvingCountdownWidget';
+import {InflationRateWidget} from './widgets/inflationRateWidget';
+import {LoadingWidget} from './widgets/loadingWidget';
+import {MarketCapWidget} from './widgets/marketCapWidget';
 import {PriceWidget} from './widgets/priceWidget';
 import {SatsPerDollarWidget} from './widgets/satsPerDollarWidget';
-import {MarketCapWidget} from './widgets/marketCapWidget';
-import {LoadingWidget} from './widgets/loadingWidget';
-import {ErrorWidget} from './widgets/errorWidget';
-import {getBitcoinPrice, getBitcoinBlockHeight} from './api';
-import {InflationRateWidget} from './widgets/inflationRateWidget';
-import {HalvingCountdownWidget} from './widgets/halvingCountdownWidget';
-import {BPIDatasetExplorer} from './BPIDatasetExplorer';
+import {TotalSupplyPieChartWidget} from './widgets/totalSupplyPieChartWidget';
+import {makeStyles} from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) =>
   ({
@@ -66,7 +66,8 @@ const SubApp = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const showSnackbarMessage = (message: string) => {
+  // TODO - Use this for displaying errors and warnings to the user.
+  const _showSnackbarMessage = (message: string) => {
     setShowSnackbar(true);
     setSnackbarMessage(message);
   };

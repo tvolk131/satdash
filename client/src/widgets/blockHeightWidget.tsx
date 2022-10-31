@@ -10,8 +10,18 @@ export const BlockHeightWidget = (props: BlockHeightWidgetProps) => {
     <div style={{padding: '10px'}}>
       <Paper style={{height: '400px', width: '400px'}}>
         <div style={{padding: '124px 0'}}>
-          <Typography variant={'h4'} style={{padding: '10px', textAlign: 'center'}}>Current Block Height</Typography>
-          <Typography variant={'h2'} style={{padding: '10px', textAlign: 'center'}}>{props.blockHeight}</Typography>
+          <Typography
+            variant={'h4'}
+            style={{padding: '10px', textAlign: 'center'}}
+          >
+            Current Block Height
+          </Typography>
+          <Typography
+            variant={'h2'}
+            style={{padding: '10px', textAlign: 'center'}}
+          >
+            {props.blockHeight}
+          </Typography>
         </div>
       </Paper>
     </div>

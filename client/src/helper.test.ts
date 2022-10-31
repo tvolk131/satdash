@@ -1,10 +1,10 @@
 import {
-  getMinedBitcoinAmountFromBlockHeight,
-  getBlockRewardFromBlockHeight,
-  truncateNumber,
   formatNumber,
+  getBlockRewardFromBlockHeight,
   getDurationEstimateFromBlockCount,
-  getNextHalvingData
+  getMinedBitcoinAmountFromBlockHeight,
+  getNextHalvingData,
+  truncateNumber
 } from './helper';
 
 describe('getMinedBitcoinAmountFromBlockHeight', () => {
@@ -108,7 +108,6 @@ describe('formatNumber', () => {
     expect(formatNumber(123456789123456, 'numberAndWord')).toEqual('123.46 trillion');
     expect(formatNumber(1234567891234567, 'numberAndWord')).toEqual('1.23 quadrillion');
     expect(formatNumber(12345678912345678, 'numberAndWord')).toEqual('12.35 quadrillion');
-    expect(formatNumber(123456789123456789, 'numberAndWord')).toEqual('123.46 quadrillion');
   });
 
   it('number with word handles decimal numbers', () => {

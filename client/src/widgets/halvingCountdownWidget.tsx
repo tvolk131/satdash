@@ -31,8 +31,22 @@ export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
             Block reward will be reduced to ₿{nextHalvingData.blockReward}
           </Typography>
           <div style={{position: 'relative', height: `${progressBarHeightPx}px`, margin: '0 20px'}}>
-            <Paper style={{position: 'absolute', height: `${progressBarHeightPx}px`, width: '100%'}} elevation={5}/>
-            <Paper style={{position: 'absolute', height: `${progressBarHeightPx}px`, width: `${halvingProgressPercentage}%`, backgroundColor: theme.palette.primary.main}}/>
+            <Paper
+              style={{
+                position: 'absolute',
+                height: `${progressBarHeightPx}px`,
+                width: '100%'
+              }}
+              elevation={5}
+            />
+            <Paper
+              style={{
+                position: 'absolute',
+                height: `${progressBarHeightPx}px`,
+                width: `${halvingProgressPercentage}%`,
+                backgroundColor: theme.palette.primary.main
+              }}
+            />
           </div>
         </div>
       </Paper>

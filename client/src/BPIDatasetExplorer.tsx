@@ -1,3 +1,24 @@
+import * as React from 'react';
+import {Animation, ValueScale} from '@devexpress/dx-react-chart';
+import {
+  ArgumentAxis,
+  Chart,
+  Legend,
+  LineSeries,
+  Title,
+  ValueAxis,
+  ZoomAndPan
+} from '@devexpress/dx-react-chart-material-ui';
+import {
+  BPIArea,
+  BPIItem,
+  BPISeriesEntry,
+  BPISeriesRange,
+  getBPIAreas,
+  getBPIDatasets,
+  getBPIItemData,
+  getBPIItems
+} from './api';
 import {
   Button,
   ButtonGroup,
@@ -10,20 +31,8 @@ import {
   Switch,
   Typography
 } from '@mui/material';
-import * as React from 'react';
-import {useState, useEffect} from 'react';
-import {getBPIItemData, getBPIDatasets, getBPIAreas, getBPIItems, BPISeriesEntry, BPISeriesRange, BPIArea, BPIItem} from './api';
-import {
-  Chart,
-  ArgumentAxis,
-  ValueAxis,
-  LineSeries,
-  Title,
-  Legend,
-  ZoomAndPan
-} from '@devexpress/dx-react-chart-material-ui';
+import {useEffect, useState} from 'react';
 import {scaleLog} from 'd3-scale';
-import {Animation, ValueScale} from '@devexpress/dx-react-chart';
 
 const getValidAreasAndItemsBasedOnDatasets = (
   datasets: BPISeriesRange[] | null | undefined,
@@ -66,33 +75,22 @@ const getValidAreasAndItemsBasedOnDatasets = (
 };
 
 const numberToMonth = (num: number): string => {
-  if (num === 1) {
-    return 'Jan';
-  } else if (num === 2) {
-    return 'Feb';
-  } else if (num === 3) {
-    return 'Mar';
-  } else if (num === 4) {
-    return 'Apr';
-  } else if (num === 5) {
-    return 'May';
-  } else if (num === 6) {
-    return 'Jun';
-  } else if (num === 7) {
-    return 'Jul';
-  } else if (num === 8) {
-    return 'Aug';
-  } else if (num === 9) {
-    return 'Sep';
-  } else if (num === 10) {
-    return 'Oct';
-  } else if (num === 11) {
-    return 'Nov';
-  } else if (num === 12) {
-    return 'Dec';
-  } else {
-    return 'Unknown';
-  }
+  const monthNumbersToNames: {[key: number]: string} = {
+    1: 'Jan',
+    2: 'Feb',
+    3: 'Mar',
+    4: 'Apr',
+    5: 'May',
+    6: 'Jun',
+    7: 'Jul',
+    8: 'Aug',
+    9: 'Sep',
+    10: 'Oct',
+    11: 'Nov',
+    12: 'Dec'
+  };
+
+  return monthNumbersToNames[num] || 'Unknown';
 };
 
 const transformItemName = (itemName: string | undefined): string | undefined => {
@@ -195,7 +193,10 @@ export const BPIDatasetExplorer = () => {
   const [displayInLogScale, setDisplayInLogScale] = useState<boolean>(true);
   const [logBase, setLogBase] = useState<2 | 10>(2);
 
-  const [[validAreas, validItems], setValidAreasAndItems] = useState<[BPIArea[], BPIItem[]]>([[], []]);
+  const [
+    [validAreas, validItems],
+    setValidAreasAndItems
+  ] = useState<[BPIArea[], BPIItem[]]>([[], []]);
 
   // The number of past years to show data for. Undefined means we should show all data.
   const [currentDataSlice, setCurrentDataSlice] = useState<undefined | 1 | 5>(undefined);
@@ -229,7 +230,7 @@ export const BPIDatasetExplorer = () => {
       let startMonth: number | undefined;
       if (currentDataSlice) {
         startYear = currentYear - currentDataSlice;
-        startMonth = currentMonth
+        startMonth = currentMonth;
       }
 
       // TODO - Use an observable instead of a promise here to prevent
@@ -267,9 +268,20 @@ export const BPIDatasetExplorer = () => {
   const chartHeightPx = 500;
   const chartLoadingSpinnerSize = 100;
 
+  const currentItem = items?.find((item) => item.itemCode === selectedItemCode);
+  const currentArea = areas?.find((area) => area.areaCode === selectedAreaCode);
+  const transformedItemName = transformItemName(currentItem?.itemName);
+
   return (
     <div>
-      <Paper style={{display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px'}}>
+      <Paper
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '10px'
+        }}
+      >
         <Button
           disabled={selectedAreaCode === undefined && selectedItemCode === undefined}
           onClick={() => {
@@ -286,7 +298,7 @@ export const BPIDatasetExplorer = () => {
             label={'Area'}
             labelId={'bpi-area-select-helper-label'}
             id={'bpi-area-select-helper-label'}
-            value={areas?.find((area) => area.areaCode === selectedAreaCode)?.areaCode || ''}
+            value={currentArea?.areaCode || ''}
             onChange={(e) => setSelectedAreaCode(e.target.value)}
           >
             {
@@ -310,12 +322,14 @@ export const BPIDatasetExplorer = () => {
             label={'Item'}
             labelId={'bpi-item-select-helper-label'}
             id={'bpi-item-select-helper-label'}
-            value={items?.find((item) => item.itemCode === selectedItemCode)?.itemCode || ''}
+            value={currentItem?.itemCode || ''}
             onChange={(e) => setSelectedItemCode(e.target.value)}
           >
             {
               validItems.map((item, index) => (
-                <MenuItem value={item.itemCode} key={index}>{transformItemName(item.itemName)}</MenuItem>
+                <MenuItem value={item.itemCode} key={index}>
+                  {transformItemName(item.itemName)}
+                </MenuItem>
               ))
             }
           </Select>
@@ -369,7 +383,7 @@ export const BPIDatasetExplorer = () => {
               <ArgumentAxis tickFormat={() => (tick) => {
                 const epochTime = parseInt(tick, 10);
                 const date = new Date(epochTime);
-                const [month, day, year] = date.toLocaleDateString().split('/');
+                const [month, _day, year] = date.toLocaleDateString().split('/');
 
                 return `${numberToMonth(parseInt(month, 10))} ${year}`;
               }} />
@@ -388,14 +402,19 @@ export const BPIDatasetExplorer = () => {
                 )}
               />
               <LineSeries
-                name={transformItemName(items?.find((item) => item.itemCode === selectedItemCode)?.itemName)}
+                name={transformedItemName}
                 valueField='valueSats'
                 argumentField='epochTime'
               />
               <ZoomAndPan/>
-              <Legend position='bottom' rootComponent={Root} itemComponent={Item} labelComponent={Label} />
+              <Legend
+                position='bottom'
+                rootComponent={Root}
+                itemComponent={Item}
+                labelComponent={Label}
+              />
               <Title
-                text={`${transformItemName(items?.find((item) => item.itemCode === selectedItemCode)?.itemName)} in ${areas?.find((area) => area.areaCode === selectedAreaCode)?.areaName}`}
+                text={`${transformedItemName} in ${currentArea?.areaName}`}
                 textComponent={TitleText}
               />
               <Animation/>
@@ -404,7 +423,12 @@ export const BPIDatasetExplorer = () => {
         {
           currentData === undefined &&
             <div style={{height: `${chartHeightPx}px`, textAlign: 'center'}}>
-              {loadingCurrentData && <CircularProgress size={chartLoadingSpinnerSize} style={{padding: `${(chartHeightPx / 2) - chartLoadingSpinnerSize}px`}}/>}
+              {loadingCurrentData &&
+                  <CircularProgress
+                    size={chartLoadingSpinnerSize}
+                    style={{padding: `${(chartHeightPx / 2) - chartLoadingSpinnerSize}px`}}
+                  />
+              }
             </div>
         }
       </Paper>

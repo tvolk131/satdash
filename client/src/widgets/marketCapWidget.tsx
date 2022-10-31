@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Paper, Typography} from '@mui/material';
-import {getMinedBitcoinAmountFromBlockHeight, formatNumber} from '../helper';
+import {formatNumber, getMinedBitcoinAmountFromBlockHeight} from '../helper';
 
 interface MarketCapWidgetProps {
   blockHeight: number,

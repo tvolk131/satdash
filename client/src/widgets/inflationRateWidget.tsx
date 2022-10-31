@@ -1,14 +1,20 @@
 import * as React from 'react';
 import {Paper, Typography} from '@mui/material';
-import {truncateNumber, getBlockRewardFromBlockHeight, getMinedBitcoinAmountFromBlockHeight} from '../helper';
+import {
+  getBlockRewardFromBlockHeight,
+  getMinedBitcoinAmountFromBlockHeight,
+  truncateNumber
+} from '../helper';
 
 interface InflationRateWidgetProps {
   blockHeight: number
 }
 
 export const InflationRateWidget = (props: InflationRateWidgetProps) => {
-  const currentAnnualizedBlockRewards = getBlockRewardFromBlockHeight(props.blockHeight) * 144 * 365;
-  const inflationRate = currentAnnualizedBlockRewards / getMinedBitcoinAmountFromBlockHeight(props.blockHeight) * 100;
+  const currentAnnualizedBlockRewards =
+      getBlockRewardFromBlockHeight(props.blockHeight) * 144 * 365;
+  const inflationRate =
+      currentAnnualizedBlockRewards / getMinedBitcoinAmountFromBlockHeight(props.blockHeight) * 100;
 
   return (
     <div style={{padding: '10px'}}>

@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 export const getBitcoinPrice = async (): Promise<number> => {
-  return ((await axios.get('https://api.blockchain.com/v3/exchange/tickers/BTC-USD')).data as any).last_trade_price;
+  const res = await axios.get('https://api.blockchain.com/v3/exchange/tickers/BTC-USD');
+  return res.data.last_trade_price;
 };
 
 export const getBitcoinBlockHeight = async (): Promise<number> => {
@@ -23,7 +24,7 @@ export const getBPIItemData = async (
     start_month: startMonth,
     end_year: endYear,
     end_month: endMonth
-  }})).data as any;
+  }})).data;
 };
 
 export interface BPISeriesEntry {
@@ -34,7 +35,7 @@ export interface BPISeriesEntry {
 }
 
 export const getBPIDatasets = async (): Promise<BPISeriesRange[]> => {
-  return (await axios.get('/api/bpi/datasets')).data as any;
+  return (await axios.get('/api/bpi/datasets')).data;
 };
 
 export interface BPISeriesRange {
@@ -47,7 +48,7 @@ export interface BPISeriesRange {
 }
 
 export const getBPIAreas = async (): Promise<BPIArea[]> => {
-  return (await axios.get('/api/bpi/areas')).data as any;
+  return (await axios.get('/api/bpi/areas')).data;
 };
 
 export interface BPIArea {
@@ -56,7 +57,7 @@ export interface BPIArea {
 }
 
 export const getBPIItems = async (): Promise<BPIItem[]> => {
-  return (await axios.get('/api/bpi/items')).data as any;
+  return (await axios.get('/api/bpi/items')).data;
 };
 
 export interface BPIItem {

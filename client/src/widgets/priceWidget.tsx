@@ -11,8 +11,18 @@ export const PriceWidget = (props: PriceWidgetProps) => {
     <div style={{padding: '10px'}}>
       <Paper style={{height: '400px', width: '400px'}}>
         <div style={{padding: '124px 0'}}>
-          <Typography variant={'h4'} style={{padding: '10px', textAlign: 'center'}}>Current Price</Typography>
-          <Typography variant={'h2'} style={{padding: '10px', textAlign: 'center'}}>${formatNumber(props.pricePerCoin, 'fullNumberWithCommas')}</Typography>
+          <Typography
+            variant={'h4'}
+            style={{padding: '10px', textAlign: 'center'}}
+          >
+            Current Price
+          </Typography>
+          <Typography
+            variant={'h2'}
+            style={{padding: '10px', textAlign: 'center'}}
+          >
+            ${formatNumber(props.pricePerCoin, 'fullNumberWithCommas')}
+          </Typography>
         </div>
       </Paper>
     </div>

@@ -52,12 +52,21 @@ export const truncateNumber = (num: number, digits: number): number => {
   return num / divisionFactor;
 };
 
-export const formatNumber = (num: number, format: 'fullNumberWithCommas' | 'numberAndWord'): string => {
+export const formatNumber =
+(num: number, format: 'fullNumberWithCommas' | 'numberAndWord'): string => {
   if (format === 'fullNumberWithCommas') {
     const parts = `${num}`.split('.');
     let whole = parts[0];
     const fraction = parts[1];
-    whole = `${whole}`.split('').reverse().join('').match(/.{1,3}/g)!.join(',').split('').reverse().join('');
+    whole = `${whole}`
+        .split('')
+        .reverse()
+        .join('')
+        .match(/.{1,3}/g)!
+        .join(',')
+        .split('')
+        .reverse()
+        .join('');
     return `${whole}${fraction ? `.${fraction}` : ''}`;
   }
 
@@ -73,8 +82,6 @@ export const formatNumber = (num: number, format: 'fullNumberWithCommas' | 'numb
   if (wordSuffixIndex === -1) {
     return `${truncateNumber(num, 2)}`;
   }
-
-  const wordSuffix = wordSuffixes[wordSuffixIndex];
 
   return `${truncateNumber(num, 2)} ${wordSuffixes[wordSuffixIndex]}`;
 };
@@ -106,7 +113,19 @@ const getDurationEstimateObjectFromBlockCount = (blockCount: number) => {
   return {years, days, hours, minutes};
 };
 
-const getDurationEstimateStringChunks = (blockCount: number) => {
+const pluralizeIfNotOne = (amount: number, unit: string): string => {
+  if (amount < 0) {
+    return `-${pluralizeIfNotOne(amount * -1, unit)}`;
+  }
+
+  if (amount === 1) {
+    return `${amount} ${unit}`;
+  } else {
+    return `${amount} ${unit}s`;
+  }
+};
+
+const getDurationEstimateStringChunks = (blockCount: number): string[] => {
   const {
     years,
     days,
@@ -116,29 +135,19 @@ const getDurationEstimateStringChunks = (blockCount: number) => {
 
   const stringChunks = [];
 
-  if (years === 1) {
-    stringChunks.push(`${years} year`);
-  } else if (years > 1) {
-    stringChunks.push(`${years} years`);
+  if (years >= 1) {
+    stringChunks.push(pluralizeIfNotOne(years, 'year'));
   }
 
-  if (days === 1) {
-    stringChunks.push(`${days} day`);
-  } else if (days > 1 || (days === 0 && stringChunks.length)) {
-    stringChunks.push(`${days} days`);
+  if (days >= 1 || stringChunks.length) {
+    stringChunks.push(pluralizeIfNotOne(days, 'day'));
   }
 
-  if (hours === 1) {
-    stringChunks.push(`${hours} hour`);
-  } else if (hours > 1 || (hours === 0 && stringChunks.length)) {
-    stringChunks.push(`${hours} hours`);
+  if (hours >= 1 || stringChunks.length) {
+    stringChunks.push(pluralizeIfNotOne(hours, 'hour'));
   }
 
-  if (minutes === 1) {
-    stringChunks.push(`${minutes} minute`);
-  } else if (stringChunks.length === 0 || minutes > 1 || (minutes === 0 && stringChunks.length)) {
-    stringChunks.push(`${minutes} minutes`);
-  }
+  stringChunks.push(pluralizeIfNotOne(minutes, 'minute'));
 
   return stringChunks;
 };
@@ -159,7 +168,8 @@ export const getDurationEstimateFromBlockCount = (blockCount: number): string =>
   return [stringChunks.join(', '), lastChunk].join(' and ');
 };
 
-export const getNextHalvingData = (blockHeight: number): {blockHeight: number, blockReward: number} => {
+export const getNextHalvingData =
+(blockHeight: number): {blockHeight: number, blockReward: number} => {
   let nextHalvingHeight = 210000;
   let nextBlockReward = 25;
 
