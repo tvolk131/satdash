@@ -13,6 +13,7 @@ import {LoadingWidget} from './widgets/loadingWidget';
 import {MarketCapWidget} from './widgets/marketCapWidget';
 import {PriceWidget} from './widgets/priceWidget';
 import {SatsPerDollarWidget} from './widgets/satsPerDollarWidget';
+import {StockToFlowWidget} from './widgets/stockToFlowWidget';
 import {TotalSupplyPieChartWidget} from './widgets/totalSupplyPieChartWidget';
 import {makeStyles} from '@mui/styles';
 
@@ -85,16 +86,6 @@ const SubApp = () => {
     }
   })();
 
-  const blockHeightWidget = (() => {
-    if (blockHeight === null) {
-      return <ErrorWidget/>;
-    } else if (blockHeight === undefined) {
-      return <LoadingWidget/>;
-    } else {
-      return <BlockHeightWidget blockHeight={blockHeight}/>;
-    }
-  })();
-
   const priceWidget = (() => {
     if (pricePerCoin === null) {
       return <ErrorWidget/>;
@@ -102,6 +93,36 @@ const SubApp = () => {
       return <LoadingWidget/>;
     } else {
       return <PriceWidget pricePerCoin={pricePerCoin}/>;
+    }
+  })();
+
+  const halvingCountdownWidget = (() => {
+    if (blockHeight === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <HalvingCountdownWidget blockHeight={blockHeight}/>;
+    }
+  })();
+
+  const stockToFlowWidget = (() => {
+    if (blockHeight === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <StockToFlowWidget blockHeight={blockHeight}/>;
+    }
+  })();
+
+  const blockHeightWidget = (() => {
+    if (blockHeight === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <BlockHeightWidget blockHeight={blockHeight}/>;
     }
   })();
 
@@ -140,24 +161,15 @@ const SubApp = () => {
     }
   })();
 
-  const halvingCountdownWidget = (() => {
-    if (blockHeight === null) {
-      return <ErrorWidget/>;
-    } else if (blockHeight === undefined) {
-      return <LoadingWidget/>;
-    } else {
-      return <HalvingCountdownWidget blockHeight={blockHeight}/>;
-    }
-  })();
-
   const widgets = [
     totalSupplyPieChartWidget,
-    blockHeightWidget,
     priceWidget,
+    halvingCountdownWidget,
+    stockToFlowWidget,
+    blockHeightWidget,
     satsPerDollarWidget,
     marketCapWidget,
-    inflationRateWidget,
-    halvingCountdownWidget
+    inflationRateWidget
   ];
 
   const lastUpdateDurationSeconds =
