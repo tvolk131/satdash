@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {Box, Grid, Paper, Snackbar, Typography} from '@mui/material';
 import {Theme, ThemeProvider, createTheme} from '@mui/material/styles';
-import {blue, teal} from '@mui/material/colors';
 import {getBitcoinBlockHeight, getBitcoinPrice} from './api';
 import {useCallback, useEffect, useState} from 'react';
 import {BPIDatasetExplorer} from './BPIDatasetExplorer';
@@ -15,6 +14,7 @@ import {PriceWidget} from './widgets/priceWidget';
 import {SatsPerDollarWidget} from './widgets/satsPerDollarWidget';
 import {StockToFlowWidget} from './widgets/stockToFlowWidget';
 import {TotalSupplyPieChartWidget} from './widgets/totalSupplyPieChartWidget';
+import {blue} from '@mui/material/colors';
 import {makeStyles} from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -229,7 +229,7 @@ const ThemedSubApp = () => {
   const theme = createTheme({
     palette: {
       primary: {main: '#F7931A'},
-      secondary: teal,
+      secondary: blue,
       mode: isDarkMode ? 'dark' : 'light'
     }
   });

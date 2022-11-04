@@ -39,8 +39,16 @@ export const TotalSupplyPieChartWidget =
         </Typography>
         <PieChart
           data={[
-            {title: 'Mined', value: minedBitcoin, color: theme.palette.primary.main},
-            {title: 'Unmined', value: unminedBitcoin, color: '#4D4D4E'}
+            {
+              title: 'Mined',
+              value: minedBitcoin,
+              color: theme.palette.primary.main
+            },
+            {
+              title: 'Unmined',
+              value: unminedBitcoin,
+              color: '#4D4D4E'
+            }
           ]}
           radius={30}
         />
