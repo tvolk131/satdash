@@ -228,7 +228,7 @@ const ThemedSubApp = () => {
 
   const theme = createTheme({
     palette: {
-      primary: blue,
+      primary: {main: '#F7931A'},
       secondary: teal,
       mode: isDarkMode ? 'dark' : 'light'
     }

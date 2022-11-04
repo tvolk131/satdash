@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Paper, Typography} from '@mui/material';
+import {Paper, Typography, useTheme} from '@mui/material';
 import {
   formatNumber,
   getMinedBitcoinAmountFromBlockHeight,
@@ -17,6 +17,8 @@ export const TotalSupplyPieChartWidget =
 (props: TotalSupplyPieChartWidgetProps) => {
   const minedBitcoin = getMinedBitcoinAmountFromBlockHeight(props.blockHeight);
   const unminedBitcoin = totalBitcoin - minedBitcoin;
+
+  const theme = useTheme();
 
   return (
     <div style={{padding: '10px'}}>
@@ -37,7 +39,7 @@ export const TotalSupplyPieChartWidget =
         </Typography>
         <PieChart
           data={[
-            {title: 'Mined', value: minedBitcoin, color: '#F7931A'},
+            {title: 'Mined', value: minedBitcoin, color: theme.palette.primary.main},
             {title: 'Unmined', value: unminedBitcoin, color: '#4D4D4E'}
           ]}
           radius={30}
