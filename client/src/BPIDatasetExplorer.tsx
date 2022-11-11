@@ -29,7 +29,8 @@ import {
   Paper,
   Select,
   Switch,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material';
 import {useEffect, useState} from 'react';
 import {scaleLog} from 'd3-scale';
@@ -210,6 +211,8 @@ export const BPIDatasetExplorer = () => {
     [validAreas, validItems],
     setValidAreasAndItems
   ] = useState<[BPIArea[], BPIItem[]]>([[], []]);
+
+  const theme = useTheme();
 
   // The number of past years to show data for.
   // Undefined means we should show all data.
@@ -435,6 +438,7 @@ export const BPIDatasetExplorer = () => {
               />
               <LineSeries
                 name={transformedItemName}
+                color={theme.palette.primary.main}
                 valueField='valueSats'
                 argumentField='epochTime'
               />

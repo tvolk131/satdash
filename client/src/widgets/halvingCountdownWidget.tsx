@@ -13,7 +13,7 @@ export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
   const halvingProgressPercentage = 100 - (blocksUntilHalving / 210000 * 100);
   const halvingDuration = getDurationEstimateFromBlockCount(blocksUntilHalving);
   const progressBarHeightPx = 55;
-  
+
   // Maximum number of wave points to display on progress bar.
   // The progress bar will be divided up into this many sections
   // and the number of wave points will be set to 1 for the first
