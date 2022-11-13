@@ -24,7 +24,12 @@ export const MarketCapWidget = (props: MarketCapWidgetProps) => {
             variant={'h2'}
             style={{padding: '10px', textAlign: 'center'}}
           >
-            ${formatNumber(coinsMined * props.pricePerCoin, 'numberAndWord')}
+            ${
+              formatNumber(
+                  coinsMined.getTotalCoinAmount() * props.pricePerCoin,
+                  'numberAndWord'
+              )
+            }
           </Typography>
         </div>
       </Paper>

@@ -12,9 +12,10 @@ interface InflationRateWidgetProps {
 
 export const InflationRateWidget = (props: InflationRateWidgetProps) => {
   const blockReward = getBlockRewardFromBlockHeight(props.blockHeight);
-  const currentAnnualizedBlockRewards = blockReward * 144 * 365;
+  const currentAnnualizedBlockRewards = blockReward.multiply(144 * 365);
   const coinsMined = getMinedBitcoinAmountFromBlockHeight(props.blockHeight);
-  const inflationRate = currentAnnualizedBlockRewards / coinsMined * 100;
+  const inflationRate =
+    currentAnnualizedBlockRewards.getRatio(coinsMined) * 100;
 
   return (
     <div style={{padding: '10px'}}>

@@ -1,22 +1,29 @@
 import * as React from 'react';
 import {Paper, Typography, useTheme} from '@mui/material';
 import {
-  formatNumber,
   getMinedBitcoinAmountFromBlockHeight,
+  getNextHalvingData,
+  totalBitcoin,
   truncateNumber
 } from '../helper';
 import {PieChart} from 'react-minimal-pie-chart';
 
-const totalBitcoin = 21000000;
-
 interface TotalSupplyPieChartWidgetProps {
-  blockHeight: number
+  blockHeight: number,
+  showRemainingAmountForCurrentHalving?: boolean
 }
 
 export const TotalSupplyPieChartWidget =
 (props: TotalSupplyPieChartWidgetProps) => {
   const minedBitcoin = getMinedBitcoinAmountFromBlockHeight(props.blockHeight);
-  const unminedBitcoin = totalBitcoin - minedBitcoin;
+  const minedBitcoinAtEndOfCurrentHalving =
+    getMinedBitcoinAmountFromBlockHeight(
+      getNextHalvingData(props.blockHeight).blockHeight
+    );
+  const additionalMinedBitcoinForCurrentHalving =
+    minedBitcoinAtEndOfCurrentHalving.subtract(minedBitcoin);
+  const unminedBitcoin =
+    totalBitcoin.subtract(minedBitcoinAtEndOfCurrentHalving);
 
   const theme = useTheme();
 
@@ -35,21 +42,46 @@ export const TotalSupplyPieChartWidget =
             right: 0
           }}
         >
-          {truncateNumber(minedBitcoin / totalBitcoin * 100, 4)}% of coins mined
+          {
+            truncateNumber(minedBitcoin.getRatio(totalBitcoin) * 100, 2)
+          }% of coins mined
         </Typography>
         <PieChart
-          data={[
-            {
-              title: 'Mined',
-              value: minedBitcoin,
-              color: theme.palette.primary.main
-            },
-            {
-              title: 'Unmined',
-              value: unminedBitcoin,
-              color: '#4D4D4E'
-            }
-          ]}
+          data={
+            props.showRemainingAmountForCurrentHalving ?
+              [
+                {
+                  title: 'Mined',
+                  value: minedBitcoin.getTotalSatAmount(),
+                  color: theme.palette.primary.main
+                },
+                {
+                  title: 'Mined by start of next halving',
+                  value: additionalMinedBitcoinForCurrentHalving
+                          .getTotalSatAmount(),
+                  color: theme.palette.primary.dark
+                },
+                {
+                  title: 'Unmined',
+                  value: unminedBitcoin.getTotalSatAmount(),
+                  color: '#4D4D4E'
+                }
+              ]
+              :
+              [
+                {
+                  title: 'Mined',
+                  value: minedBitcoin.getTotalSatAmount(),
+                  color: theme.palette.primary.main
+                },
+                {
+                  title: 'Unmined',
+                  value: additionalMinedBitcoinForCurrentHalving
+                          .add(unminedBitcoin).getTotalSatAmount(),
+                  color: '#4D4D4E'
+                }
+              ]
+          }
           radius={30}
         />
         <svg
@@ -98,10 +130,9 @@ export const TotalSupplyPieChartWidget =
             right: 0
           }}
         >
-          {formatNumber(
-            totalBitcoin - minedBitcoin,
-            'fullNumberWithCommas'
-          )} coins left to mine
+          {
+            totalBitcoin.subtract(minedBitcoin).getCoinAmountString()
+          } left to mine
         </Typography>
       </Paper>
     </div>

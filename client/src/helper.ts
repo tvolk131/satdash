@@ -1,31 +1,37 @@
+import {BitcoinAmount} from './bitcoin';
+
 // A Bitcoin halving occurs every 210000 blocks.
 const blockHalvingCount = 210000;
 
 export const getMinedBitcoinAmountFromBlockHeight =
-(blockHeight: number): number => {
-  let bitcoinAmount = 0;
-  let blockReward = 50;
+(blockHeight: number): BitcoinAmount => {
+  let bitcoinAmount = new BitcoinAmount();
+  let blockRewardSats = 50 * 100000000;
 
-  while (blockHeight > blockHalvingCount) {
+  while (blockHeight > blockHalvingCount && blockRewardSats > 0) {
     blockHeight -= blockHalvingCount;
-    bitcoinAmount += blockReward * blockHalvingCount;
-    blockReward /= 2;
+    bitcoinAmount.addRaw({sats: blockRewardSats * blockHalvingCount});
+    blockRewardSats = Math.floor(blockRewardSats / 2);
   }
 
-  bitcoinAmount += blockHeight * blockReward;
-
+  bitcoinAmount.addRaw({sats: blockHeight * blockRewardSats});
   return bitcoinAmount;
 };
 
-export const getBlockRewardFromBlockHeight = (blockHeight: number): number => {
-  let blockReward = 50;
+export const totalBitcoin = getMinedBitcoinAmountFromBlockHeight(6930000);
 
-  while (blockHeight > blockHalvingCount) {
+export const maxBlockHeightWithReward = 6929999;
+
+export const getBlockRewardFromBlockHeight =
+(blockHeight: number): BitcoinAmount => {
+  let blockRewardSats = 50 * 100000000;
+
+  while (blockHeight >= blockHalvingCount && blockRewardSats > 0) {
     blockHeight -= blockHalvingCount;
-    blockReward /= 2;
+    blockRewardSats = Math.floor(blockRewardSats /= 2);
   }
 
-  return blockReward;
+  return new BitcoinAmount({sats: blockRewardSats});
 };
 
 export const truncateNumber = (num: number, digits: number): number => {
@@ -177,13 +183,13 @@ export const getDurationEstimateFromBlockCount =
 };
 
 export const getNextHalvingData =
-(blockHeight: number): {blockHeight: number, blockReward: number} => {
+(blockHeight: number): {blockHeight: number, blockReward: BitcoinAmount} => {
   let nextHalvingHeight = 210000;
-  let nextBlockReward = 25;
+  let nextBlockReward = new BitcoinAmount({coins: 25});
 
   while (nextHalvingHeight <= blockHeight) {
     nextHalvingHeight += 210000;
-    nextBlockReward /= 2;
+    nextBlockReward = nextBlockReward.floorDivide(2);
   }
 
   return {blockHeight: nextHalvingHeight, blockReward: nextBlockReward};

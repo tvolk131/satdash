@@ -1,6 +1,11 @@
 import * as React from 'react';
 import {Paper, Typography, useTheme} from '@mui/material';
-import {getDurationEstimateFromBlockCount, getNextHalvingData} from '../helper';
+import {
+  getDurationEstimateFromBlockCount,
+  getNextHalvingData,
+  maxBlockHeightWithReward
+} from '../helper';
+import {CheckCircleOutline} from '@mui/icons-material';
 import Wave from 'react-wavify';
 
 interface HalvingCountdownWidgetProps {
@@ -30,6 +35,34 @@ export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
 
   const theme = useTheme();
 
+  if (props.blockHeight > maxBlockHeightWithReward) {
+    const greenCheckWidthPx = 100;
+
+    return (
+      <div style={{padding: '10px'}}>
+        <Paper style={{height: '400px', width: '400px'}}>
+          <div style={{padding: '119px 0'}}>
+            <Typography
+              variant={'h4'}
+              style={{textAlign: 'center', paddingBottom: '20px'}}
+            >
+              All Bitcoin is mined!
+            </Typography>
+            <div style={{textAlign: 'center'}}>
+              <CheckCircleOutline
+                color={'success'}
+                style={{
+                  height: `${greenCheckWidthPx}px`,
+                  width: `${greenCheckWidthPx}px`
+                }}
+              />
+            </div>
+          </div>
+        </Paper>
+      </div>
+    );
+  }
+
   return (
     <div style={{padding: '10px'}}>
       <Paper style={{height: '400px', width: '400px'}}>
@@ -44,7 +77,7 @@ export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
             variant={'h2'}
             style={{padding: '10px', textAlign: 'center'}}
           >
-            {blocksUntilHalving} blocks
+            {blocksUntilHalving} block{blocksUntilHalving > 1 && 's'}
           </Typography>
           <Typography style={{padding: '10px', textAlign: 'center'}}>
             Approximately {halvingDuration}
@@ -53,7 +86,14 @@ export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
             variant={'h6'}
             style={{padding: '10px', textAlign: 'center'}}
           >
-            Block reward will be reduced to ₿{nextHalvingData.blockReward}
+            Block reward will be {
+              nextHalvingData.blockReward.getTotalSatAmount() > 0 ?
+                `reduced to ${
+                  nextHalvingData.blockReward.getCoinAmountString()
+                }`
+                :
+                'removed'
+            }
           </Typography>
           <div
             style={{

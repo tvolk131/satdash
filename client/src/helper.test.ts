@@ -6,45 +6,68 @@ import {
   getNextHalvingData,
   truncateNumber
 } from './helper';
+import {BitcoinAmount} from './bitcoin';
 
 describe('getMinedBitcoinAmountFromBlockHeight', () => {
   it('returns correct value for intial block heights', () => {
-    expect(getMinedBitcoinAmountFromBlockHeight(0)).toEqual(0);
-    expect(getMinedBitcoinAmountFromBlockHeight(1)).toEqual(50);
+    expect(getMinedBitcoinAmountFromBlockHeight(0))
+      .toEqual(new BitcoinAmount({coins: 0}));
+    expect(getMinedBitcoinAmountFromBlockHeight(1))
+      .toEqual(new BitcoinAmount({coins: 50}));
   });
 
   it('returns correct value between each halving', () => {
-    expect(getMinedBitcoinAmountFromBlockHeight(210000)).toEqual(10500000);
-    expect(getMinedBitcoinAmountFromBlockHeight(210001)).toEqual(10500025);
+    expect(getMinedBitcoinAmountFromBlockHeight(210000))
+      .toEqual(new BitcoinAmount({coins: 10500000}));
+    expect(getMinedBitcoinAmountFromBlockHeight(210001))
+      .toEqual(new BitcoinAmount({coins: 10500025}));
 
-    expect(getMinedBitcoinAmountFromBlockHeight(420000)).toEqual(15750000);
-    expect(getMinedBitcoinAmountFromBlockHeight(420001)).toEqual(15750012.5);
+    expect(getMinedBitcoinAmountFromBlockHeight(420000))
+      .toEqual(new BitcoinAmount({coins: 15750000}));
+    expect(getMinedBitcoinAmountFromBlockHeight(420001))
+      .toEqual(new BitcoinAmount({coins: 15750012, sats: 50000000}));
 
-    expect(getMinedBitcoinAmountFromBlockHeight(630000)).toEqual(18375000);
-    expect(getMinedBitcoinAmountFromBlockHeight(630001)).toEqual(18375006.25);
+    expect(getMinedBitcoinAmountFromBlockHeight(630000))
+      .toEqual(new BitcoinAmount({coins: 18375000}));
+    expect(getMinedBitcoinAmountFromBlockHeight(630001))
+      .toEqual(new BitcoinAmount({coins: 18375006, sats: 25000000}));
 
-    expect(getMinedBitcoinAmountFromBlockHeight(840000)).toEqual(19687500);
-    expect(getMinedBitcoinAmountFromBlockHeight(840001)).toEqual(19687503.125);
+    expect(getMinedBitcoinAmountFromBlockHeight(840000))
+      .toEqual(new BitcoinAmount({coins: 19687500}));
+    expect(getMinedBitcoinAmountFromBlockHeight(840001))
+      .toEqual(new BitcoinAmount({coins: 19687503, sats: 12500000}));
   });
 
-  it('converges on 21,000,000 coins', () => {
-    expect(getMinedBitcoinAmountFromBlockHeight(100000000)).toEqual(21000000);
+  it('converges on 20,999,999.9769 coins', () => {
+    expect(getMinedBitcoinAmountFromBlockHeight(100000000))
+      .toEqual(new BitcoinAmount({coins: 20999999, sats: 97690000}));
   });
 });
 
 describe('getBlockRewardFromBlockHeight', () => {
   it('returns correct value', () => {
-    expect(getBlockRewardFromBlockHeight(0)).toEqual(50);
-    expect(getBlockRewardFromBlockHeight(210000)).toEqual(50);
+    expect(getBlockRewardFromBlockHeight(0))
+      .toEqual(new BitcoinAmount({coins: 50}));
+    expect(getBlockRewardFromBlockHeight(209999))
+      .toEqual(new BitcoinAmount({coins: 50}));
 
-    expect(getBlockRewardFromBlockHeight(210001)).toEqual(25);
-    expect(getBlockRewardFromBlockHeight(420000)).toEqual(25);
+    expect(getBlockRewardFromBlockHeight(210000))
+      .toEqual(new BitcoinAmount({coins: 25}));
+    expect(getBlockRewardFromBlockHeight(419999))
+      .toEqual(new BitcoinAmount({coins: 25}));
 
-    expect(getBlockRewardFromBlockHeight(420001)).toEqual(12.5);
-    expect(getBlockRewardFromBlockHeight(630000)).toEqual(12.5);
+    expect(getBlockRewardFromBlockHeight(420000))
+      .toEqual(new BitcoinAmount({coins: 12, sats: 50000000}));
+    expect(getBlockRewardFromBlockHeight(629999))
+      .toEqual(new BitcoinAmount({coins: 12, sats: 50000000}));
 
-    expect(getBlockRewardFromBlockHeight(630001)).toEqual(6.25);
-    expect(getBlockRewardFromBlockHeight(840000)).toEqual(6.25);
+    expect(getBlockRewardFromBlockHeight(630000))
+      .toEqual(new BitcoinAmount({coins: 6, sats: 25000000}));
+    expect(getBlockRewardFromBlockHeight(839999))
+      .toEqual(new BitcoinAmount({coins: 6, sats: 25000000}));
+
+    expect(getBlockRewardFromBlockHeight(840000))
+      .toEqual(new BitcoinAmount({coins: 3, sats: 12500000}));
   });
 });
 
@@ -173,18 +196,30 @@ describe('getDurationEstimateFromBlockCount', () => {
 
 describe('getNextHalvingData', () => {
   it('returns correct value', () => {
-    expect(getNextHalvingData(0))
-      .toEqual({blockHeight: 210000, blockReward: 25});
-    expect(getNextHalvingData(1))
-      .toEqual({blockHeight: 210000, blockReward: 25});
-    expect(getNextHalvingData(209999))
-      .toEqual({blockHeight: 210000, blockReward: 25});
-    expect(getNextHalvingData(210000))
-      .toEqual({blockHeight: 420000, blockReward: 12.5});
+    expect(getNextHalvingData(0)).toEqual({
+      blockHeight: 210000,
+      blockReward: new BitcoinAmount({coins: 25})
+    });
+    expect(getNextHalvingData(1)).toEqual({
+      blockHeight: 210000,
+      blockReward: new BitcoinAmount({coins: 25})
+    });
+    expect(getNextHalvingData(209999)).toEqual({
+      blockHeight: 210000,
+      blockReward: new BitcoinAmount({coins: 25})
+    });
+    expect(getNextHalvingData(210000)).toEqual({
+      blockHeight: 420000,
+      blockReward: new BitcoinAmount({coins: 12, sats: 50000000})
+    });
 
-    expect(getNextHalvingData(839999))
-      .toEqual({blockHeight: 840000, blockReward: 3.125});
-    expect(getNextHalvingData(840000))
-      .toEqual({blockHeight: 1050000, blockReward: 1.5625});
+    expect(getNextHalvingData(839999)).toEqual({
+      blockHeight: 840000,
+      blockReward: new BitcoinAmount({coins: 3, sats: 12500000})
+    });
+    expect(getNextHalvingData(840000)).toEqual({
+      blockHeight: 1050000,
+      blockReward: new BitcoinAmount({coins: 1, sats: 56250000})
+    });
   });
 });

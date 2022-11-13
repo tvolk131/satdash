@@ -12,7 +12,7 @@ interface StockToFlowWidgetProps {
 
 export const StockToFlowWidget = (props: StockToFlowWidgetProps) => {
   const blockReward = getBlockRewardFromBlockHeight(props.blockHeight);
-  const currentAnnualizedBlockRewards = blockReward * 144 * 365;
+  const currentAnnualizedBlockRewards = blockReward.multiply(144 * 365);
   const coinsMined = getMinedBitcoinAmountFromBlockHeight(props.blockHeight);
 
   return (
@@ -29,7 +29,12 @@ export const StockToFlowWidget = (props: StockToFlowWidgetProps) => {
             variant={'h2'}
             style={{padding: '10px', textAlign: 'center'}}
           >
-            {truncateNumber(coinsMined / currentAnnualizedBlockRewards, 2)}
+            {
+              truncateNumber(
+                coinsMined.getRatio(currentAnnualizedBlockRewards),
+                2
+              )
+            }
           </Typography>
         </div>
       </Paper>
