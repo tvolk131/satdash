@@ -4,11 +4,12 @@ import {Widget} from './widget';
 
 interface SimpleWidgetProps {
   headerText: string,
-  mainText: string
+  mainText: string,
+  description?: string
 }
 
 export const SimpleWidget = (props: SimpleWidgetProps) => (
-  <Widget>
+  <Widget description={props.description}>
     <div style={{padding: '124px 0'}}>
       <Typography
         variant={'h4'}
