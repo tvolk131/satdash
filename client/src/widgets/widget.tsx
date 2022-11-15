@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {Paper} from '@mui/material';
+import {ReactNode} from 'react';
 
 interface WidgetProps {
-  children?: JSX.Element | JSX.Element[]
+  children?: ReactNode | ReactNode[]
 }
 
 export const Widget = (props: WidgetProps) => (

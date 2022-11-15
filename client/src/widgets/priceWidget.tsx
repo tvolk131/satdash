@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {formatNumber} from '../helper';
 import {SimpleWidget} from './simpleWidget';
+import {formatNumber} from '../helper';
 
 interface PriceWidgetProps {
   pricePerCoin: number

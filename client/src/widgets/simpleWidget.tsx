@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Paper, Typography} from '@mui/material';
+import {Typography} from '@mui/material';
 import {Widget} from './widget';
 
 interface SimpleWidgetProps {
