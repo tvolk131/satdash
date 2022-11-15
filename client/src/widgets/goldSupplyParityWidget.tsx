@@ -25,7 +25,7 @@ export const GoldSupplyParityWidget = (props: GoldSupplyParityWidgetProps) => {
       description={
         'A supply-to-supply measurement of how much above-ground gold exists ' +
         'for every Bitcoin that has been mined. Put another way, if ' +
-        'Bitcoin\'s supply cap was identical to that of gold, one Bitcoin '+
+        'Bitcoin\'s market cap was identical to that of gold, one Bitcoin '+
         'would buy you this much gold.'
       }
     />
