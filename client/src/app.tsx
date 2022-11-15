@@ -6,6 +6,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {BPIDatasetExplorer} from './BPIDatasetExplorer';
 import {BlockHeightWidget} from './widgets/blockHeightWidget';
 import {ErrorWidget} from './widgets/errorWidget';
+import {GoldSupplyParityWidget} from './widgets/goldSupplyParityWidget';
 import {HalvingCountdownWidget} from './widgets/halvingCountdownWidget';
 import {InflationRateWidget} from './widgets/inflationRateWidget';
 import {LoadingWidget} from './widgets/loadingWidget';
@@ -161,6 +162,16 @@ const SubApp = () => {
     }
   })();
 
+  const goldParityWidget = (() => {
+    if (blockHeight === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <GoldSupplyParityWidget blockHeight={blockHeight}/>;
+    }
+  })();
+
   const widgets = [
     totalSupplyPieChartWidget,
     priceWidget,
@@ -169,7 +180,8 @@ const SubApp = () => {
     blockHeightWidget,
     satsPerDollarWidget,
     marketCapWidget,
-    inflationRateWidget
+    inflationRateWidget,
+    goldParityWidget
   ];
 
   const lastUpdateDurationSeconds =
