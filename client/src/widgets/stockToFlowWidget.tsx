@@ -5,6 +5,7 @@ import {
   getMinedBitcoinAmountFromBlockHeight,
   truncateNumber
 } from '../helper';
+import {SimpleWidget} from './simpleWidget';
 
 interface StockToFlowWidgetProps {
   blockHeight: number
@@ -16,28 +17,14 @@ export const StockToFlowWidget = (props: StockToFlowWidgetProps) => {
   const coinsMined = getMinedBitcoinAmountFromBlockHeight(props.blockHeight);
 
   return (
-    <div style={{padding: '10px'}}>
-      <Paper style={{height: '400px', width: '400px'}}>
-        <div style={{padding: '124px 0'}}>
-          <Typography
-            variant={'h4'}
-            style={{padding: '10px', textAlign: 'center'}}
-          >
-            Stock to Flow
-          </Typography>
-          <Typography
-            variant={'h2'}
-            style={{padding: '10px', textAlign: 'center'}}
-          >
-            {
-              truncateNumber(
-                coinsMined.getRatio(currentAnnualizedBlockRewards),
-                2
-              )
-            }
-          </Typography>
-        </div>
-      </Paper>
-    </div>
+    <SimpleWidget
+      headerText={'Stock to Flow'}
+      mainText={`${
+        truncateNumber(
+          coinsMined.getRatio(currentAnnualizedBlockRewards),
+          2
+        )
+      }`}
+    />
   );
 };
