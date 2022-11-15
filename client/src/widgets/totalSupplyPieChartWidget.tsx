@@ -7,6 +7,7 @@ import {
   truncateNumber
 } from '../helper';
 import {PieChart} from 'react-minimal-pie-chart';
+import {Widget} from './widget';
 
 interface TotalSupplyPieChartWidgetProps {
   blockHeight: number,
@@ -28,8 +29,8 @@ export const TotalSupplyPieChartWidget =
   const theme = useTheme();
 
   return (
-    <div style={{padding: '10px'}}>
-      <Paper style={{height: '400px', width: '400px', position: 'relative'}}>
+    <Widget>
+      <div style={{position: 'relative'}}>
         <Typography
           variant={'h5'}
           style={{
@@ -134,7 +135,7 @@ export const TotalSupplyPieChartWidget =
             totalBitcoin.subtract(minedBitcoin).getCoinAmountString()
           } left to mine
         </Typography>
-      </Paper>
-    </div>
+      </div>
+    </Widget>
   );
 };

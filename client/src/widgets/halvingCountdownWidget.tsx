@@ -7,6 +7,7 @@ import {
 } from '../helper';
 import {CheckCircleOutline} from '@mui/icons-material';
 import Wave from 'react-wavify';
+import {Widget} from './widget';
 
 interface HalvingCountdownWidgetProps {
   blockHeight: number
@@ -39,100 +40,96 @@ export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
     const greenCheckWidthPx = 100;
 
     return (
-      <div style={{padding: '10px'}}>
-        <Paper style={{height: '400px', width: '400px'}}>
-          <div style={{padding: '119px 0'}}>
-            <Typography
-              variant={'h4'}
-              style={{textAlign: 'center', paddingBottom: '20px'}}
-            >
-              All Bitcoin is mined!
-            </Typography>
-            <div style={{textAlign: 'center'}}>
-              <CheckCircleOutline
-                color={'success'}
-                style={{
-                  height: `${greenCheckWidthPx}px`,
-                  width: `${greenCheckWidthPx}px`
-                }}
-              />
-            </div>
+      <Widget>
+        <div style={{padding: '119px 0'}}>
+          <Typography
+            variant={'h4'}
+            style={{textAlign: 'center', paddingBottom: '20px'}}
+          >
+            All Bitcoin is mined!
+          </Typography>
+          <div style={{textAlign: 'center'}}>
+            <CheckCircleOutline
+              color={'success'}
+              style={{
+                height: `${greenCheckWidthPx}px`,
+                width: `${greenCheckWidthPx}px`
+              }}
+            />
           </div>
-        </Paper>
-      </div>
+        </div>
+      </Widget>
     );
   }
 
   return (
-    <div style={{padding: '10px'}}>
-      <Paper style={{height: '400px', width: '400px'}}>
-        <div style={{padding: '53px 0'}}>
-          <Typography
-            variant={'h4'}
-            style={{padding: '0 10px 10px 10px', textAlign: 'center'}}
-          >
-            Next Halving
-          </Typography>
-          <Typography
-            variant={'h2'}
-            style={{padding: '10px', textAlign: 'center'}}
-          >
-            {blocksUntilHalving} block{blocksUntilHalving > 1 && 's'}
-          </Typography>
-          <Typography style={{padding: '10px', textAlign: 'center'}}>
-            Approximately {halvingDuration}
-          </Typography>
-          <Typography
-            variant={'h6'}
-            style={{padding: '10px', textAlign: 'center'}}
-          >
-            Block reward will be {
-              nextHalvingData.blockReward.getTotalSatAmount() > 0 ?
-                `reduced to ${
-                  nextHalvingData.blockReward.getCoinAmountString()
-                }`
-                :
-                'removed'
-            }
-          </Typography>
-          <div
+    <Widget>
+      <div style={{padding: '53px 0'}}>
+        <Typography
+          variant={'h4'}
+          style={{padding: '0 10px 10px 10px', textAlign: 'center'}}
+        >
+          Next Halving
+        </Typography>
+        <Typography
+          variant={'h2'}
+          style={{padding: '10px', textAlign: 'center'}}
+        >
+          {blocksUntilHalving} block{blocksUntilHalving > 1 && 's'}
+        </Typography>
+        <Typography style={{padding: '10px', textAlign: 'center'}}>
+          Approximately {halvingDuration}
+        </Typography>
+        <Typography
+          variant={'h6'}
+          style={{padding: '10px', textAlign: 'center'}}
+        >
+          Block reward will be {
+            nextHalvingData.blockReward.getTotalSatAmount() > 0 ?
+              `reduced to ${
+                nextHalvingData.blockReward.getCoinAmountString()
+              }`
+              :
+              'removed'
+          }
+        </Typography>
+        <div
+          style={{
+            position: 'relative',
+            height: `${progressBarHeightPx}px`,
+            margin: '0 20px'
+          }}
+        >
+          <Paper
             style={{
-              position: 'relative',
+              position: 'absolute',
               height: `${progressBarHeightPx}px`,
-              margin: '0 20px'
+              width: '100%'
+            }}
+            elevation={5}
+          />
+          <Paper
+            style={{
+              position: 'absolute',
+              height: `${progressBarHeightPx}px`,
+              width: `${halvingProgressPercentage}%`,
+              backgroundColor: theme.palette.primary.dark,
+              overflow: 'hidden'
             }}
           >
-            <Paper
-              style={{
-                position: 'absolute',
-                height: `${progressBarHeightPx}px`,
-                width: '100%'
+            <Wave
+              fill={theme.palette.primary.main}
+              paused={false}
+              options={{
+                amplitude: 10,
+                points: Math.ceil(
+                  halvingProgressPercentage / (100 / maxWavePoints)
+                )
               }}
-              elevation={5}
             />
-            <Paper
-              style={{
-                position: 'absolute',
-                height: `${progressBarHeightPx}px`,
-                width: `${halvingProgressPercentage}%`,
-                backgroundColor: theme.palette.primary.dark,
-                overflow: 'hidden'
-              }}
-            >
-              <Wave
-                fill={theme.palette.primary.main}
-                paused={false}
-                options={{
-                  amplitude: 10,
-                  points: Math.ceil(
-                    halvingProgressPercentage / (100 / maxWavePoints)
-                  )
-                }}
-              />
-            </Paper>
-          </div>
+          </Paper>
         </div>
-      </Paper>
-    </div>
+      </div>
+    </Widget>
   );
 };
