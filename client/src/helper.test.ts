@@ -157,27 +157,27 @@ describe('getDurationEstimateFromBlockCount', () => {
     expect(getDurationEstimateFromBlockCount(100))
       .toEqual('16 hours and 40 minutes');
     expect(getDurationEstimateFromBlockCount(1000))
-      .toEqual('6 days, 22 hours and 40 minutes');
+      .toEqual('6 days and 22 hours');
     expect(getDurationEstimateFromBlockCount(10000))
-      .toEqual('69 days, 10 hours and 40 minutes');
+      .toEqual('69 days and 10 hours');
     expect(getDurationEstimateFromBlockCount(100000))
-      .toEqual('1 year, 329 days and 10 hours');
+      .toEqual('1 year and 329 days');
     expect(getDurationEstimateFromBlockCount(1000000))
-      .toEqual('19 years, 9 days and 10 hours');
+      .toEqual('19 years and 9 days');
     expect(getDurationEstimateFromBlockCount(10000000))
-      .toEqual('190 years, 94 days and 10 hours');
+      .toEqual('190 years and 94 days');
   });
 
   it('uses singular values when appropriate', () => {
     expect(getDurationEstimateFromBlockCount(52710))
-      .toEqual('1 year, 1 day and 1 hour');
+      .toEqual('1 year and 1 day');
   });
 
   it('truncates from the left side', () => {
     expect(getDurationEstimateFromBlockCount(52560))
-      .toEqual('1 year, 0 days and 0 hours');
+      .toEqual('1 year and 0 days');
     expect(getDurationEstimateFromBlockCount(144))
-      .toEqual('1 day, 0 hours and 0 minutes');
+      .toEqual('1 day and 0 hours');
     expect(getDurationEstimateFromBlockCount(6))
       .toEqual('1 hour and 0 minutes');
   });
@@ -186,11 +186,11 @@ describe('getDurationEstimateFromBlockCount', () => {
     expect(getDurationEstimateFromBlockCount(0)).toEqual('0 minutes');
   });
 
-  it('truncates to maximum of 3 units', () => {
+  it('truncates to maximum of 2 units', () => {
     expect(getDurationEstimateFromBlockCount(52559))
-      .toEqual('364 days, 23 hours and 50 minutes');
+      .toEqual('364 days and 23 hours');
     expect(getDurationEstimateFromBlockCount(52560))
-      .toEqual('1 year, 0 days and 0 hours');
+      .toEqual('1 year and 0 days');
   });
 });
 
