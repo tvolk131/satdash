@@ -173,7 +173,7 @@ export const getDurationEstimateFromBlockCount =
     return stringChunks[0];
   }
 
-  while (stringChunks.length > 3) {
+  while (stringChunks.length > 2) {
     stringChunks.pop();
   }
 
