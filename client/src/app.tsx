@@ -5,6 +5,9 @@ import {getBitcoinBlockHeight, getBitcoinPrice} from './api';
 import {useCallback, useEffect, useState} from 'react';
 import {BPIDatasetExplorer} from './BPIDatasetExplorer';
 import {BlockHeightWidget} from './widgets/blockHeightWidget';
+import {
+  DifficultyAdjustmentCountdownWidget
+} from './widgets/difficultyAdjustmentCountdownWidget';
 import {ErrorWidget} from './widgets/errorWidget';
 import {GoldSupplyParityWidget} from './widgets/goldSupplyParityWidget';
 import {HalvingCountdownWidget} from './widgets/halvingCountdownWidget';
@@ -107,6 +110,16 @@ const SubApp = () => {
     }
   })();
 
+  const difficultyAdjustmentCountdownWidget = (() => {
+    if (blockHeight === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return <DifficultyAdjustmentCountdownWidget blockHeight={blockHeight}/>;
+    }
+  })();
+
   const stockToFlowWidget = (() => {
     if (blockHeight === null) {
       return <ErrorWidget/>;
@@ -176,6 +189,7 @@ const SubApp = () => {
     totalSupplyPieChartWidget,
     priceWidget,
     halvingCountdownWidget,
+    difficultyAdjustmentCountdownWidget,
     stockToFlowWidget,
     blockHeightWidget,
     satsPerDollarWidget,

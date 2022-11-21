@@ -2,7 +2,8 @@ import * as React from 'react';
 import {
   getDurationEstimateFromBlockCount,
   getNextHalvingData,
-  maxBlockHeightWithReward
+  maxBlockHeightWithReward,
+  pluralizeIfNotOne
 } from '../helper';
 import {CheckCircleOutline} from '@mui/icons-material';
 import {Typography} from '@mui/material';
@@ -58,7 +59,7 @@ export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
           variant={'h2'}
           style={{padding: '10px', textAlign: 'center'}}
         >
-          {blocksUntilHalving} block{blocksUntilHalving > 1 && 's'}
+          {pluralizeIfNotOne(blocksUntilHalving, 'block')}
         </Typography>
         <Typography style={{padding: '10px', textAlign: 'center'}}>
           Approximately {halvingDuration}

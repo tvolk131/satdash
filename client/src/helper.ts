@@ -126,7 +126,7 @@ const getDurationEstimateObjectFromBlockCount = (blockCount: number) => {
   return {years, days, hours, minutes};
 };
 
-const pluralizeIfNotOne = (amount: number, unit: string): string => {
+export const pluralizeIfNotOne = (amount: number, unit: string): string => {
   if (amount < 0) {
     return `-${pluralizeIfNotOne(amount * -1, unit)}`;
   }
