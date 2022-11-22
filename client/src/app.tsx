@@ -2,16 +2,14 @@ import * as React from 'react';
 import {
   Box,
   Grid,
-  Paper,
   Snackbar,
   SpeedDial,
   SpeedDialAction,
-  SpeedDialIcon,
-  Typography
+  SpeedDialIcon
 } from '@mui/material';
 import {Theme, ThemeProvider, createTheme} from '@mui/material/styles';
 import {getBitcoinBlockHeight, getBitcoinPrice} from './api';
-import {useCallback, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {BPIDatasetExplorer} from './BPIDatasetExplorer';
 import {BlockHeightWidget} from './widgets/blockHeightWidget';
 import {
@@ -53,13 +51,6 @@ const SubApp = () => {
 
   const [showInfoIcons, setShowInfoIcons] = useState(true);
 
-  const [lastUpdated, setLastUpdated] = useState(Date.now());
-
-  // Used to force-update the component.
-  // The state itself isn't used for anything.
-  const [, updateState] = useState<any>();
-  const forceUpdate = useCallback(() => updateState({}), []);
-
   useEffect(() => {
     const loadData = () => {
       const pricePromise = getBitcoinPrice()
@@ -70,19 +61,16 @@ const SubApp = () => {
         .then((blockHeight) => setBlockHeight(blockHeight))
         .catch(() => setBlockHeight(null));
 
-      Promise.all([pricePromise, blockHeightPromise])
-        .then(() => setLastUpdated(Date.now()));
+      return Promise.all([pricePromise, blockHeightPromise]);
     };
-    const intervalId = setInterval(loadData, 30000);
-    loadData();
-    return () => clearInterval(intervalId);
-  }, []);
 
-  // Used to force update the component.
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      forceUpdate();
-    }, 200);
+    // Initial load.
+    loadData();
+
+    // Re-load periodically.
+    const intervalId = setInterval(loadData, 30000);
+
+    // Stop re-loading on component dismount.
     return () => clearInterval(intervalId);
   }, []);
 
@@ -220,9 +208,6 @@ const SubApp = () => {
     goldParityWidget
   ];
 
-  const lastUpdateDurationSeconds =
-    Math.floor((Date.now() - lastUpdated) / 1000);
-
   return (
     <div className={classes.root}>
       {/* This meta tag makes the mobile experience
@@ -256,14 +241,6 @@ const SubApp = () => {
           onClick={() => setShowInfoIcons(!showInfoIcons)}
         />
       </SpeedDial>
-      <Paper style={{position: 'fixed', bottom: 0, right: 0, margin: '20px'}}>
-        <Typography
-          variant={'h5'}
-          style={{padding: '10px'}}
-        >
-          Last updated {lastUpdateDurationSeconds} seconds ago
-        </Typography>
-      </Paper>
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',
