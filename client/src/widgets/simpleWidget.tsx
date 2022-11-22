@@ -5,11 +5,14 @@ import {Widget} from './widget';
 interface SimpleWidgetProps {
   headerText: string,
   mainText: string,
-  description?: string
+  backSideInfo?: {
+    description: string,
+    showInfoIcon: boolean
+  }
 }
 
 export const SimpleWidget = (props: SimpleWidgetProps) => (
-  <Widget description={props.description}>
+  <Widget backSideInfo={props.backSideInfo}>
     <div style={{padding: '124px 0'}}>
       <Typography
         variant={'h4'}

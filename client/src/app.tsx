@@ -1,5 +1,14 @@
 import * as React from 'react';
-import {Box, Grid, Paper, Snackbar, Typography} from '@mui/material';
+import {
+  Box,
+  Grid,
+  Paper,
+  Snackbar,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
+  Typography
+} from '@mui/material';
 import {Theme, ThemeProvider, createTheme} from '@mui/material/styles';
 import {getBitcoinBlockHeight, getBitcoinPrice} from './api';
 import {useCallback, useEffect, useState} from 'react';
@@ -12,6 +21,7 @@ import {ErrorWidget} from './widgets/errorWidget';
 import {GoldSupplyParityWidget} from './widgets/goldSupplyParityWidget';
 import {HalvingCountdownWidget} from './widgets/halvingCountdownWidget';
 import {InflationRateWidget} from './widgets/inflationRateWidget';
+import {Info as InfoIcon} from '@mui/icons-material';
 import {LoadingWidget} from './widgets/loadingWidget';
 import {MarketCapWidget} from './widgets/marketCapWidget';
 import {PriceWidget} from './widgets/priceWidget';
@@ -40,6 +50,8 @@ const SubApp = () => {
     useState<number | null | undefined>(undefined);
   const [blockHeight, setBlockHeight] =
     useState<number | null | undefined>(undefined);
+
+  const [showInfoIcons, setShowInfoIcons] = useState(true);
 
   const [lastUpdated, setLastUpdated] = useState(Date.now());
 
@@ -126,7 +138,12 @@ const SubApp = () => {
     } else if (blockHeight === undefined) {
       return <LoadingWidget/>;
     } else {
-      return <StockToFlowWidget blockHeight={blockHeight}/>;
+      return (
+        <StockToFlowWidget
+          blockHeight={blockHeight}
+          showInfoIcon={showInfoIcons}
+        />
+      );
     }
   })();
 
@@ -181,7 +198,12 @@ const SubApp = () => {
     } else if (blockHeight === undefined) {
       return <LoadingWidget/>;
     } else {
-      return <GoldSupplyParityWidget blockHeight={blockHeight}/>;
+      return (
+        <GoldSupplyParityWidget
+          blockHeight={blockHeight}
+          showInfoIcon={showInfoIcons}
+        />
+      );
     }
   })();
 
@@ -223,6 +245,17 @@ const SubApp = () => {
         </div>
       </div>
       <BPIDatasetExplorer/>
+      <SpeedDial
+        ariaLabel={'SpeedDial'}
+        sx={{position: 'fixed', bottom: 16, right: 16}}
+        icon={<SpeedDialIcon/>}
+      >
+        <SpeedDialAction
+          icon={<InfoIcon/>}
+          tooltipTitle={'Show/Hide info icons'}
+          onClick={() => setShowInfoIcons(!showInfoIcons)}
+        />
+      </SpeedDial>
       <Paper style={{position: 'fixed', bottom: 0, right: 0, margin: '20px'}}>
         <Typography
           variant={'h5'}

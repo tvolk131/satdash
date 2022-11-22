@@ -1,16 +1,25 @@
 import * as React from 'react';
-import {CSSProperties, useState} from 'react';
+import {CSSProperties, useEffect, useState} from 'react';
 import {IconButton, Paper, Typography} from '@mui/material';
 import {InfoOutlined, UndoOutlined} from '@mui/icons-material';
 import {ReactNode} from 'react';
 
 interface WidgetProps {
   children?: ReactNode | ReactNode[],
-  description?: string
+  backSideInfo?: {
+    description: string,
+    showInfoIcon: boolean
+  }
 }
 
 export const Widget = (props: WidgetProps) => {
   const [showBack, setShowBack] = useState(false);
+
+  useEffect(() => {
+    if ((!props.backSideInfo?.showInfoIcon) && showBack) {
+      setShowBack(false);
+    }
+  }, [props.backSideInfo?.showInfoIcon, showBack]);
 
   const innerSideStyles: CSSProperties = {
     position: 'absolute',
@@ -51,10 +60,21 @@ export const Widget = (props: WidgetProps) => {
             style={innerSideStyles}
           >
             {
-              props.description &&
+              props.backSideInfo &&
                 <IconButton
-                  style={iconButtonStyles}
-                  onClick={() => setShowBack(!showBack)}
+                  style={{
+                    ...iconButtonStyles,
+                    transition: 'transform 0.5s, opacity 0.5s',
+                    transform: props.backSideInfo.showInfoIcon ?
+                      undefined : 'rotate(180deg)',
+                    opacity: props.backSideInfo.showInfoIcon ?
+                      undefined : 0,
+                    cursor: props.backSideInfo.showInfoIcon ?
+                      undefined : 'auto'
+                  }}
+                  onClick={() => {
+                    props.backSideInfo?.showInfoIcon && setShowBack(!showBack);
+                  }}
                 >
                   <InfoOutlined
                     color={'info'}
@@ -76,7 +96,7 @@ export const Widget = (props: WidgetProps) => {
             }}
           >
             {
-              props.description &&
+              props.backSideInfo &&
                 <IconButton
                   style={iconButtonStyles}
                   onClick={() => setShowBack(!showBack)}
@@ -99,7 +119,7 @@ export const Widget = (props: WidgetProps) => {
                   position: 'absolute'
                 }}
               >
-                {props.description}
+                {props.backSideInfo?.description || ''}
               </Typography>
             </Paper>
           </div>
