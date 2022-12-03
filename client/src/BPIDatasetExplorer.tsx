@@ -28,11 +28,10 @@ import {
   MenuItem,
   Paper,
   Select,
-  Switch,
-  Typography,
   useTheme
 } from '@mui/material';
 import {useEffect, useState} from 'react';
+import {Undo as UndoIcon} from '@mui/icons-material';
 import {scaleLog} from 'd3-scale';
 
 const getValidAreasAndItemsBasedOnDatasets = (
@@ -189,6 +188,8 @@ const getEpochTime = (entry: BPISeriesEntry): number => {
   return (new Date(`${entry.month}/${entry.day}/${entry.year}`)).valueOf();
 };
 
+type DisplayScale = {scale: 'linear'} | {scale: 'log', log: number};
+
 export const BPIDatasetExplorer = () => {
   const [datasets, setDatasets] =
     useState<BPISeriesRange[] | null | undefined>(undefined);
@@ -204,8 +205,10 @@ export const BPIDatasetExplorer = () => {
     useState<BPISeriesEntry[] | null | undefined>(undefined);
   const [loadingCurrentData, setLoadingCurrentData] = useState<boolean>(false);
 
-  const [displayInLogScale, setDisplayInLogScale] = useState<boolean>(true);
-  const [logBase, setLogBase] = useState<2 | 10>(2);
+  const [
+    displayScale,
+    setDisplayScale
+  ] = useState<DisplayScale>({scale: 'linear'});
 
   const [
     [validAreas, validItems],
@@ -297,109 +300,125 @@ export const BPIDatasetExplorer = () => {
 
   return (
     <div>
-      <Paper
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '10px'
-        }}
-      >
-        <Button
-          disabled={
-            selectedAreaCode === undefined &&
-            selectedItemCode === undefined
-          }
-          onClick={() => {
-            setSelectedAreaCode(undefined);
-            setSelectedItemCode(undefined);
+      <Paper style={{padding: '10px'}}>
+        <div
+          style={{
+            justifyContent: 'center',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center'
           }}
         >
-          Reset
-        </Button>
-        <FormControl sx={{m: 1, minWidth: 120}} size={'small'}>
-          <InputLabel id={'bpi-area-select-helper-label'}>Area</InputLabel>
-          <Select
-            disabled={!areas}
-            label={'Area'}
-            labelId={'bpi-area-select-helper-label'}
-            id={'bpi-area-select-helper-label'}
-            value={currentArea?.areaCode || ''}
-            onChange={(e) => setSelectedAreaCode(e.target.value)}
-          >
-            {
-              validAreas.map((area, index) => (
-                <MenuItem
-                  value={area.areaCode}
-                  key={index}
-                >
-                  {area.areaName}
-                </MenuItem>
-              ))
+          <Button
+            variant={'contained'}
+            disabled={
+              selectedAreaCode === undefined &&
+              selectedItemCode === undefined
             }
-          </Select>
-        </FormControl>
-        <div style={{margin: '0 20px'}}>
-          <Typography>Log Scale</Typography>
-          <Switch
-            checked={displayInLogScale}
-            onChange={() => setDisplayInLogScale(!displayInLogScale)}
-          />
-        </div>
-        <FormControl sx={{m: 1, minWidth: 120}} size={'small'}>
-          <InputLabel id={'bpi-item-select-helper-label'}>Item</InputLabel>
-          <Select
-            disabled={!items}
-            label={'Item'}
-            labelId={'bpi-item-select-helper-label'}
-            id={'bpi-item-select-helper-label'}
-            value={currentItem?.itemCode || ''}
-            onChange={(e) => setSelectedItemCode(e.target.value)}
+            onClick={() => {
+              setSelectedAreaCode(undefined);
+              setSelectedItemCode(undefined);
+            }}
+            startIcon={<UndoIcon/>}
           >
-            {
-              validItems.map((item, index) => (
-                <MenuItem value={item.itemCode} key={index}>
-                  {transformItemName(item.itemName)}
-                </MenuItem>
-              ))
-            }
-          </Select>
-        </FormControl>
-        <ButtonGroup variant={'contained'}>
-          <Button
-            onClick={() => setCurrentDataSlice(undefined)}
-            disabled={currentDataSlice === undefined}
-          >
-            Max
+            Reset
           </Button>
-          <Button
-            onClick={() => setCurrentDataSlice(1)}
-            disabled={currentDataSlice === 1}
-          >
-            1 Year
-          </Button>
-          <Button
-            onClick={() => setCurrentDataSlice(5)}
-            disabled={currentDataSlice === 5}
-          >
-            5 Years
-          </Button>
-        </ButtonGroup>
-        <div style={{margin: '0 10px'}}>
-          <ButtonGroup disabled={!displayInLogScale} variant={'contained'}>
-            <Button
-              onClick={() => setLogBase(2)}
-              disabled={logBase === 2}
+          <FormControl sx={{m: 1, minWidth: 120}} size={'small'}>
+            <InputLabel id={'bpi-area-select-helper-label'}>Area</InputLabel>
+            <Select
+              disabled={!areas}
+              label={'Area'}
+              labelId={'bpi-area-select-helper-label'}
+              id={'bpi-area-select-helper-label'}
+              value={currentArea?.areaCode || ''}
+              onChange={(e) => setSelectedAreaCode(e.target.value)}
             >
-              Base 2
+              {
+                validAreas.map((area, index) => (
+                  <MenuItem
+                    value={area.areaCode}
+                    key={index}
+                  >
+                    {area.areaName}
+                  </MenuItem>
+                ))
+              }
+            </Select>
+          </FormControl>
+          <FormControl sx={{m: 1, minWidth: 120}} size={'small'}>
+            <InputLabel id={'bpi-item-select-helper-label'}>Item</InputLabel>
+            <Select
+              disabled={!items}
+              label={'Item'}
+              labelId={'bpi-item-select-helper-label'}
+              id={'bpi-item-select-helper-label'}
+              value={currentItem?.itemCode || ''}
+              onChange={(e) => setSelectedItemCode(e.target.value)}
+            >
+              {
+                validItems.map((item, index) => (
+                  <MenuItem value={item.itemCode} key={index}>
+                    {transformItemName(item.itemName)}
+                  </MenuItem>
+                ))
+              }
+            </Select>
+          </FormControl>
+        </div>
+        <div
+          style={{
+            justifyContent: 'center',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center'
+          }}
+        >
+          <ButtonGroup variant={'contained'} style={{margin: '5px'}}>
+            <Button
+              onClick={() => setCurrentDataSlice(undefined)}
+              disabled={currentDataSlice === undefined}
+            >
+              Max
             </Button>
             <Button
-              onClick={() => setLogBase(10)}
-              disabled={logBase === 10}
+              onClick={() => setCurrentDataSlice(1)}
+              disabled={currentDataSlice === 1}
             >
-              Base 10
+              1 Year
+            </Button>
+            <Button
+              onClick={() => setCurrentDataSlice(5)}
+              disabled={currentDataSlice === 5}
+            >
+              5 Years
             </Button>
           </ButtonGroup>
+          <div style={{margin: '0 10px'}}>
+            <ButtonGroup variant={'contained'} style={{margin: '5px'}}>
+              <Button
+                onClick={() => setDisplayScale({scale: 'linear'})}
+                disabled={displayScale.scale === 'linear'}
+              >
+                Linear
+              </Button>
+              <Button
+                onClick={() => setDisplayScale({scale: 'log', log: 2})}
+                disabled={
+                  displayScale.scale === 'log' && displayScale.log === 2
+                }
+              >
+                Log (Base 2)
+              </Button>
+              <Button
+                onClick={() => setDisplayScale({scale: 'log', log: 10})}
+                disabled={
+                  displayScale.scale === 'log' && displayScale.log === 10
+                }
+              >
+                Log (Base 10)
+              </Button>
+            </ButtonGroup>
+          </div>
         </div>
       </Paper>
       <Paper>
@@ -423,9 +442,9 @@ export const BPIDatasetExplorer = () => {
                 return `${numberToMonth(parseInt(month, 10))} ${year}`;
               }} />
               {
-                displayInLogScale &&
+                displayScale.scale === 'log' &&
                   <ValueScale
-                    factory={() => scaleLog().base(logBase)}
+                    factory={() => scaleLog().base(displayScale.log)}
                   />
               }
               <ValueAxis
