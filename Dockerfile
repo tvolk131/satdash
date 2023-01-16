@@ -11,6 +11,6 @@ RUN cd server && cargo build --release && mkdir -p /build-out && cp target/relea
 FROM ubuntu:22.10
 COPY --from=server-base /build-out/satdash-server /
 ENV ROCKET_PORT=80
-env ROCKET_ADDRESS="0.0.0.0"
+ENV ROCKET_ADDRESS="0.0.0.0"
 EXPOSE 80
 CMD /satdash-server
