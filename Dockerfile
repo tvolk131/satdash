@@ -1,7 +1,7 @@
 FROM node:19.0.0 AS client-base
 COPY ./ ./app
 WORKDIR /app
-RUN cd client && npm ci --only=production && npm run build-prod
+RUN cd client && npm ci && npm run build-prod
 
 FROM rust:1.64.0 as server-base
 COPY --from=client-base ./app ./app
