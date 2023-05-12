@@ -31,7 +31,7 @@ import {
   useTheme
 } from '@mui/material';
 import {useEffect, useState} from 'react';
-import {Undo as UndoIcon} from '@mui/icons-material';
+import UndoIcon from '@mui/icons-material/Undo';
 import {scaleLog} from 'd3-scale';
 
 const getValidAreasAndItemsBasedOnDatasets = (

@@ -19,7 +19,7 @@ import {ErrorWidget} from './widgets/errorWidget';
 import {GoldSupplyParityWidget} from './widgets/goldSupplyParityWidget';
 import {HalvingCountdownWidget} from './widgets/halvingCountdownWidget';
 import {InflationRateWidget} from './widgets/inflationRateWidget';
-import {Info as InfoIcon} from '@mui/icons-material';
+import InfoIcon from '@mui/icons-material/Info';
 import {LoadingWidget} from './widgets/loadingWidget';
 import {MarketCapWidget} from './widgets/marketCapWidget';
 import {PriceWidget} from './widgets/priceWidget';

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {CSSProperties, useEffect, useState} from 'react';
 import {IconButton, Paper, Typography} from '@mui/material';
-import {InfoOutlined, UndoOutlined} from '@mui/icons-material';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
+import UndoIcon from '@mui/icons-material/UndoOutlined';
 import {ReactNode} from 'react';
 
 interface WidgetProps {
@@ -76,7 +77,7 @@ export const Widget = (props: WidgetProps) => {
                     props.backSideInfo?.showInfoIcon && setShowBack(!showBack);
                   }}
                 >
-                  <InfoOutlined
+                  <InfoIcon
                     color={'info'}
                     style={{
                       height: '30px',
@@ -101,7 +102,7 @@ export const Widget = (props: WidgetProps) => {
                   style={iconButtonStyles}
                   onClick={() => setShowBack(!showBack)}
                 >
-                  <UndoOutlined
+                  <UndoIcon
                     color={'info'}
                     style={{
                       height: '30px',

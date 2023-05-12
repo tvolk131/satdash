@@ -5,7 +5,7 @@ import {
   maxBlockHeightWithReward,
   pluralizeIfNotOne
 } from '../helper';
-import {CheckCircleOutline} from '@mui/icons-material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircleOutline';
 import {Typography} from '@mui/material';
 import {WaveBar} from '../waveBar';
 import {Widget} from './widget';
@@ -33,7 +33,7 @@ export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
             All Bitcoin is mined!
           </Typography>
           <div style={{textAlign: 'center'}}>
-            <CheckCircleOutline
+            <CheckCircleIcon
               color={'success'}
               style={{
                 height: `${greenCheckWidthPx}px`,
