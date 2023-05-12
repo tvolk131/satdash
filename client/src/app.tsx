@@ -1,20 +1,16 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Snackbar from '@mui/material/Snackbar';
-import SpeedDial from '@mui/material/SpeedDial';
-import SpeedDialAction from '@mui/material/SpeedDialAction';
-import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import {Theme, ThemeProvider, createTheme} from '@mui/material/styles';
 import {getBitcoinBlockHeight, getBitcoinPrice} from './api';
 import {useEffect, useState} from 'react';
 import {BPIDatasetExplorer} from './BPIDatasetExplorer';
 import {BlockHeightWidget} from './widgets/blockHeightWidget';
+import Box from '@mui/material/Box';
 import {
   DifficultyAdjustmentCountdownWidget
 } from './widgets/difficultyAdjustmentCountdownWidget';
 import {ErrorWidget} from './widgets/errorWidget';
 import {GoldSupplyParityWidget} from './widgets/goldSupplyParityWidget';
+import Grid from '@mui/material/Grid';
 import {HalvingCountdownWidget} from './widgets/halvingCountdownWidget';
 import {InflationRateWidget} from './widgets/inflationRateWidget';
 import InfoIcon from '@mui/icons-material/Info';
@@ -22,6 +18,10 @@ import {LoadingWidget} from './widgets/loadingWidget';
 import {MarketCapWidget} from './widgets/marketCapWidget';
 import {PriceWidget} from './widgets/priceWidget';
 import {SatsPerDollarWidget} from './widgets/satsPerDollarWidget';
+import Snackbar from '@mui/material/Snackbar';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import {StockToFlowWidget} from './widgets/stockToFlowWidget';
 import {TotalSupplyPieChartWidget} from './widgets/totalSupplyPieChartWidget';
 import {blue} from '@mui/material/colors';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
-import {useTheme} from '@mui/material/styles';
 import Wave from 'react-wavify';
+import {useTheme} from '@mui/material/styles';
 
 interface WaveBarProps {
   /** Maximum number of wave points to display on progress bar.

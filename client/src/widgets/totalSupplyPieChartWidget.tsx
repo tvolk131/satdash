@@ -1,6 +1,4 @@
 import * as React from 'react';
-import Typography from '@mui/material/Typography';
-import {useTheme} from '@mui/material/styles';
 import {
   getMinedBitcoinAmountFromBlockHeight,
   getNextHalvingData,
@@ -8,7 +6,9 @@ import {
   truncateNumber
 } from '../helper';
 import {PieChart} from 'react-minimal-pie-chart';
+import Typography from '@mui/material/Typography';
 import {Widget} from './widget';
+import {useTheme} from '@mui/material/styles';
 
 interface TotalSupplyPieChartWidgetProps {
   blockHeight: number,

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {CSSProperties, useEffect, useState} from 'react';
 import IconButton from '@mui/material/IconButton';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
-import UndoIcon from '@mui/icons-material/UndoOutlined';
+import Paper from '@mui/material/Paper';
 import {ReactNode} from 'react';
+import Typography from '@mui/material/Typography';
+import UndoIcon from '@mui/icons-material/UndoOutlined';
 
 interface WidgetProps {
   children?: ReactNode | ReactNode[],
