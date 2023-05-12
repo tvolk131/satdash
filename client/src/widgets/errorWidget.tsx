@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Typography} from '@mui/material';
+import Typography from '@mui/material/Typography';
 import {Widget} from './widget';
 
 export const ErrorWidget = () => (

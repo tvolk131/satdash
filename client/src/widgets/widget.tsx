@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {CSSProperties, useEffect, useState} from 'react';
-import {IconButton, Paper, Typography} from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import UndoIcon from '@mui/icons-material/UndoOutlined';
 import {ReactNode} from 'react';

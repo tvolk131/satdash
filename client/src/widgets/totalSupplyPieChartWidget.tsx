@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Typography, useTheme} from '@mui/material';
+import Typography from '@mui/material/Typography';
+import {useTheme} from '@mui/material/styles';
 import {
   getMinedBitcoinAmountFromBlockHeight,
   getNextHalvingData,

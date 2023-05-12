@@ -3,7 +3,7 @@ import {
   getDurationEstimateFromBlockCount,
   pluralizeIfNotOne
 } from '../helper';
-import {Typography} from '@mui/material';
+import Typography from '@mui/material/Typography';
 import {WaveBar} from '../waveBar';
 import {Widget} from './widget';
 

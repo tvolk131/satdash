@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Paper, useTheme} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import {useTheme} from '@mui/material/styles';
 import Wave from 'react-wavify';
 
 interface WaveBarProps {

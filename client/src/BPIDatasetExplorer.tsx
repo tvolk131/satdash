@@ -19,17 +19,15 @@ import {
   getBPIItemData,
   getBPIItems
 } from './api';
-import {
-  Button,
-  ButtonGroup,
-  CircularProgress,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  useTheme
-} from '@mui/material';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import CircularProgress from '@mui/material/CircularProgress';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Select from '@mui/material/Select';
+import {useTheme} from '@mui/material/styles';
 import {useEffect, useState} from 'react';
 import UndoIcon from '@mui/icons-material/Undo';
 import {scaleLog} from 'd3-scale';

@@ -1,12 +1,10 @@
 import * as React from 'react';
-import {
-  Box,
-  Grid,
-  Snackbar,
-  SpeedDial,
-  SpeedDialAction,
-  SpeedDialIcon
-} from '@mui/material';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Snackbar from '@mui/material/Snackbar';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import {Theme, ThemeProvider, createTheme} from '@mui/material/styles';
 import {getBitcoinBlockHeight, getBitcoinPrice} from './api';
 import {useEffect, useState} from 'react';

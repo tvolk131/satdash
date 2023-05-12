@@ -6,7 +6,7 @@ import {
   pluralizeIfNotOne
 } from '../helper';
 import CheckCircleIcon from '@mui/icons-material/CheckCircleOutline';
-import {Typography} from '@mui/material';
+import Typography from '@mui/material/Typography';
 import {WaveBar} from '../waveBar';
 import {Widget} from './widget';
 

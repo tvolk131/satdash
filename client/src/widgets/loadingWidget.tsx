@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Card, CircularProgress} from '@mui/material';
+import Card from '@mui/material/Card';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const spinnerSize = 100;
 
