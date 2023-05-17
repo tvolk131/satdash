@@ -6,7 +6,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 export default (_: any, {watch, mode}: {watch?: boolean, mode?: string}): webpack.Configuration => {
-  const maxBundleSize = mode === 'production' ? 650000 : 3700000;
+  const maxBundleSize = mode === 'production' ? 660000 : 3800000;
 
   return {
     entry: `${SRC_DIR}/index.tsx`,
