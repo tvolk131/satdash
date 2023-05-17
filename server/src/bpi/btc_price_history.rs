@@ -75,10 +75,12 @@ async fn load_api_btc_price_data() -> Result<DatedSeries, Box<dyn std::error::Er
         serde_json::from_str(&bitcoin_price_api_resp_string).unwrap();
     let mut api_loaded_price_by_date = HashMap::new();
     for entry in bitcoin_price_api_resp.prices {
-        api_loaded_price_by_date.insert(
-            convert_date_string_to_date(&entry.timeframe.timestamp).unwrap(),
-            entry.open,
-        );
+        if let Some(open) = entry.open {
+            api_loaded_price_by_date.insert(
+                convert_date_string_to_date(&entry.timeframe.timestamp).unwrap(),
+                open,
+            );
+        }
     }
 
     Ok(DatedSeries::new(api_loaded_price_by_date))
@@ -92,7 +94,7 @@ struct BitcoinPriceApiResponse {
 #[derive(Deserialize)]
 struct BitcoinPriceApiEntry {
     timeframe: BitcoinPriceApiTimeframe,
-    open: f64,
+    open: Option<f64>,
 }
 
 #[derive(Deserialize)]
