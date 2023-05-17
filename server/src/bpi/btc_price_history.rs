@@ -7,8 +7,8 @@ pub struct BTCPriceHistory {
     /// Fallback Bitcoin price data that's stored
     /// in the binary in case API data can't be loaded.
     csv_price_by_date: DatedSeries,
-    /// Dynamically-loaded up-to-date Bitcoin price data. Used by default.
-    api_loaded_price_by_date_or: Option<DatedSeries>,
+    // /// Dynamically-loaded up-to-date Bitcoin price data. Used by default.
+    // api_loaded_price_by_date_or: Option<DatedSeries>,
 }
 
 impl BTCPriceHistory {
@@ -23,24 +23,29 @@ impl BTCPriceHistory {
             );
         }
 
-        let api_loaded_price_by_date_or = match load_api_btc_price_data().await {
-            Ok(api_loaded_price_by_date) => Some(api_loaded_price_by_date),
-            Err(_) => None,
-        };
+        // let api_loaded_price_by_date_or = match load_api_btc_price_data().await {
+        //     Ok(api_loaded_price_by_date) => Some(api_loaded_price_by_date),
+        //     Err(_) => None,
+        // };
 
         Ok(Self {
             csv_price_by_date: DatedSeries::new(csv_price_by_date),
-            api_loaded_price_by_date_or,
+            // api_loaded_price_by_date_or,
         })
     }
 
     /// Attempts to return API-loaded price data if available, falling
     /// back to preloaded CSV data if necessary.
     pub fn get_best_dataset(&self) -> &DatedSeries {
-        match &self.api_loaded_price_by_date_or {
-            Some(api_loaded_price_by_date) => api_loaded_price_by_date,
-            None => &self.csv_price_by_date,
-        }
+        // TODO - This line is a hotfix due to breakage of the current
+        // Bitcoin price data API. Remove this and uncomment the block
+        // below it once things are working again. We probably need to
+        // start using a different price API.
+        &self.csv_price_by_date
+        // match &self.api_loaded_price_by_date_or {
+        //     Some(api_loaded_price_by_date) => api_loaded_price_by_date,
+        //     None => &self.csv_price_by_date,
+        // }
     }
 }
 
@@ -67,38 +72,38 @@ struct BTCPriceCSVEntry {
     open: String,
 }
 
-async fn load_api_btc_price_data() -> Result<DatedSeries, Box<dyn std::error::Error>> {
-    let bitcoin_price_api_resp_string = reqwest::get(
-        "https://api.statmuse.com/money/assets/64a686bd-2876-4636-bdf1-f83febe1dbb3/price?frequency=Day"
-    ).await?.text().await?;
-    let bitcoin_price_api_resp: BitcoinPriceApiResponse =
-        serde_json::from_str(&bitcoin_price_api_resp_string).unwrap();
-    let mut api_loaded_price_by_date = HashMap::new();
-    for entry in bitcoin_price_api_resp.prices {
-        if let Some(open) = entry.open {
-            api_loaded_price_by_date.insert(
-                convert_date_string_to_date(&entry.timeframe.timestamp).unwrap(),
-                open,
-            );
-        }
-    }
+// async fn load_api_btc_price_data() -> Result<DatedSeries, Box<dyn std::error::Error>> {
+//     let bitcoin_price_api_resp_string = reqwest::get(
+//         "https://api.statmuse.com/money/assets/64a686bd-2876-4636-bdf1-f83febe1dbb3/price?frequency=Day"
+//     ).await?.text().await?;
+//     let bitcoin_price_api_resp: BitcoinPriceApiResponse =
+//         serde_json::from_str(&bitcoin_price_api_resp_string).unwrap();
+//     let mut api_loaded_price_by_date = HashMap::new();
+//     for entry in bitcoin_price_api_resp.prices {
+//         if let Some(open) = entry.open {
+//             api_loaded_price_by_date.insert(
+//                 convert_date_string_to_date(&entry.timeframe.timestamp).unwrap(),
+//                 open,
+//             );
+//         }
+//     }
 
-    Ok(DatedSeries::new(api_loaded_price_by_date))
-}
+//     Ok(DatedSeries::new(api_loaded_price_by_date))
+// }
 
-#[derive(Deserialize)]
-struct BitcoinPriceApiResponse {
-    prices: Vec<BitcoinPriceApiEntry>,
-}
+// #[derive(Deserialize)]
+// struct BitcoinPriceApiResponse {
+//     prices: Vec<BitcoinPriceApiEntry>,
+// }
 
-#[derive(Deserialize)]
-struct BitcoinPriceApiEntry {
-    timeframe: BitcoinPriceApiTimeframe,
-    open: Option<f64>,
-}
+// #[derive(Deserialize)]
+// struct BitcoinPriceApiEntry {
+//     // timeframe: BitcoinPriceApiTimeframe,
+//     // open: Option<f64>,
+// }
 
-#[derive(Deserialize)]
-struct BitcoinPriceApiTimeframe {
-    /// Should always be in format "yyyy-mm-dd"
-    timestamp: String,
-}
+// #[derive(Deserialize)]
+// struct BitcoinPriceApiTimeframe {
+//     /// Should always be in format "yyyy-mm-dd"
+//     timestamp: String,
+// }
