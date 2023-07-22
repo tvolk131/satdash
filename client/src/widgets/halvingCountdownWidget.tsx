@@ -11,7 +11,8 @@ import {WaveBar} from '../waveBar';
 import {Widget} from './widget';
 
 interface HalvingCountdownWidgetProps {
-  blockHeight: number
+  blockHeight: number,
+  showInfoIcon: boolean
 }
 
 export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
@@ -20,11 +21,22 @@ export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
   const halvingProgressPercentage = 100 - (blocksUntilHalving / 210000 * 100);
   const halvingDuration = getDurationEstimateFromBlockCount(blocksUntilHalving);
 
+  const backSideInfo = {
+    description: 'The Bitcoin halving is a recurring event programmed ' +
+    'into the Bitcoin protocol that occurs every 210,000 blocks ' +
+    '(approximately four years). Each halving cuts the supply of newly ' +
+    'created Bitcoins in half. This ensures a fixed supply of 21 ' +
+    'million coins, since without a halving, a constant supply of ' +
+    'coins would lead to an infinite supply over time. Thus, halvings ' +
+    'ensuring its scarcity and deflationary nature.',
+    showInfoIcon: props.showInfoIcon
+  };
+
   if (props.blockHeight > maxBlockHeightWithReward) {
     const greenCheckWidthPx = 100;
 
     return (
-      <Widget>
+      <Widget backSideInfo={backSideInfo}>
         <div style={{padding: '119px 0'}}>
           <Typography
             variant={'h4'}
@@ -47,7 +59,7 @@ export const HalvingCountdownWidget = (props: HalvingCountdownWidgetProps) => {
   }
 
   return (
-    <Widget>
+    <Widget backSideInfo={backSideInfo}>
       <div style={{padding: '53px 0'}}>
         <Typography
           variant={'h4'}

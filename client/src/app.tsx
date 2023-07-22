@@ -104,7 +104,12 @@ const SubApp = () => {
     } else if (blockHeight === undefined) {
       return <LoadingWidget/>;
     } else {
-      return <HalvingCountdownWidget blockHeight={blockHeight}/>;
+      return (
+        <HalvingCountdownWidget
+          blockHeight={blockHeight}
+          showInfoIcon={showInfoIcons}
+        />
+      );
     }
   })();
 
