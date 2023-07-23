@@ -24,6 +24,7 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import {StockToFlowWidget} from './widgets/stockToFlowWidget';
 import {TotalSupplyPieChartWidget} from './widgets/totalSupplyPieChartWidget';
+import {WorldPopulationWidget} from './widgets/worldPopulationWidget';
 import {blue} from '@mui/material/colors';
 import {makeStyles} from '@mui/styles';
 
@@ -198,6 +199,21 @@ const SubApp = () => {
     }
   })();
 
+  const worldPopulationWidget = (() => {
+    if (blockHeight === null) {
+      return <ErrorWidget/>;
+    } else if (blockHeight === undefined) {
+      return <LoadingWidget/>;
+    } else {
+      return (
+        <WorldPopulationWidget
+          blockHeight={blockHeight}
+          showInfoIcon={showInfoIcons}
+        />
+      );
+    }
+  })();
+
   const widgets = [
     totalSupplyPieChartWidget,
     priceWidget,
@@ -208,7 +224,8 @@ const SubApp = () => {
     satsPerDollarWidget,
     marketCapWidget,
     inflationRateWidget,
-    goldParityWidget
+    goldParityWidget,
+    worldPopulationWidget
   ];
 
   return (
