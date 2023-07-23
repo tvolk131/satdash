@@ -8,7 +8,8 @@ import {WaveBar} from '../waveBar';
 import {Widget} from './widget';
 
 interface DifficultyAdjustmentCountdownWidgetProps {
-  blockHeight: number
+  blockHeight: number,
+  showInfoIcon: boolean
 }
 
 const blocksPerDifficultyAdjustment = 2016;
@@ -27,7 +28,17 @@ export const DifficultyAdjustmentCountdownWidget =
     getDurationEstimateFromBlockCount(blocksUntilDifficultyAdjustment);
 
   return (
-    <Widget>
+    <Widget
+      backSideInfo={{
+        description: 'The difficulty adjustment is a mechanism that keeps ' +
+        'the average block time at 10 minutes. Every 2016 blocks ' +
+        '(approximately every two weeks) the average block time is ' +
+        'calculated. If the average block time over the most recent 2016 ' +
+        'blocks was less than 10 minutes, the difficulty increases. If it ' +
+        'was more than 10 minutes, the difficulty decreases.',
+        showInfoIcon: props.showInfoIcon
+      }}
+    >
       <div style={{padding: '57px 0'}}>
         <Typography
           variant={'h4'}

@@ -120,7 +120,12 @@ const SubApp = () => {
     } else if (blockHeight === undefined) {
       return <LoadingWidget/>;
     } else {
-      return <DifficultyAdjustmentCountdownWidget blockHeight={blockHeight}/>;
+      return (
+        <DifficultyAdjustmentCountdownWidget
+          blockHeight={blockHeight}
+          showInfoIcon={showInfoIcons}
+        />
+      );
     }
   })();
 
