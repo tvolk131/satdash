@@ -221,8 +221,14 @@ mod raw {
                 '_,
                 std::collections::hash_map::IntoIter<std::string::String, std::string::String>,
                 serde::de::value::Error,
-            > = MapDeserializer::new(item_map.into_iter());
-            items.push(T::deserialize(deserializer).unwrap());
+            > = MapDeserializer::new(item_map.clone().into_iter());
+            match T::deserialize(deserializer) {
+                Ok(item) => items.push(item),
+                Err(e) => {
+                    eprintln!("Error deserializing item: {}", e);
+                    eprintln!("Item map: {:?}", item_map);
+                }
+            }
         }
 
         Ok(items)
