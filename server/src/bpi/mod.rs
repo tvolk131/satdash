@@ -16,10 +16,10 @@ pub struct BPIEngine {
 }
 
 impl BPIEngine {
-    pub async fn new() -> Self {
+    pub fn new() -> Self {
         let mut bpi_engine = Self {
-            cpi_query_engine: cpi_query_engine::CpiQueryEngine::new().await,
-            btc_price_history: btc_price_history::BTCPriceHistory::new().await.unwrap(),
+            cpi_query_engine: cpi_query_engine::CpiQueryEngine::new(),
+            btc_price_history: btc_price_history::BTCPriceHistory::new().unwrap(),
             computed_valid_series_ranges: Vec::new(),
         };
 

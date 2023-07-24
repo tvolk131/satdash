@@ -29,10 +29,8 @@ impl Area {
     }
 }
 
-pub async fn get_areas() -> Result<Vec<Area>, reqwest::Error> {
-    raw::get_raw_areas()
-        .await
-        .map(|raw_areas| raw_areas.into_iter().map(Area::new_from_raw).collect())
+pub fn get_areas() -> Result<Vec<Area>, reqwest::Error> {
+    raw::get_raw_areas().map(|raw_areas| raw_areas.into_iter().map(Area::new_from_raw).collect())
 }
 
 #[derive(Serialize, PartialEq, Eq, Clone, Hash)]
@@ -64,10 +62,8 @@ impl Item {
     }
 }
 
-pub async fn get_items() -> Result<Vec<Item>, reqwest::Error> {
-    raw::get_raw_items()
-        .await
-        .map(|raw_items| raw_items.into_iter().map(Item::new_from_raw).collect())
+pub fn get_items() -> Result<Vec<Item>, reqwest::Error> {
+    raw::get_raw_items().map(|raw_items| raw_items.into_iter().map(Item::new_from_raw).collect())
 }
 
 pub struct SeriesEntry {
@@ -125,15 +121,13 @@ impl SeriesEntry {
     }
 }
 
-pub async fn get_current_series_entries() -> Result<Vec<SeriesEntry>, reqwest::Error> {
-    raw::get_current_raw_series_entries()
-        .await
-        .map(|raw_series_entries| {
-            raw_series_entries
-                .into_iter()
-                .filter_map(SeriesEntry::new_from_raw_or)
-                .collect()
-        })
+pub fn get_current_series_entries() -> Result<Vec<SeriesEntry>, reqwest::Error> {
+    raw::get_current_raw_series_entries().map(|raw_series_entries| {
+        raw_series_entries
+            .into_iter()
+            .filter_map(SeriesEntry::new_from_raw_or)
+            .collect()
+    })
 }
 
 mod raw {
@@ -146,8 +140,8 @@ mod raw {
         pub area_name: String,
     }
 
-    pub async fn get_raw_areas() -> Result<Vec<RawArea>, reqwest::Error> {
-        get_data_sheet("https://download.bls.gov/pub/time.series/ap/ap.area").await
+    pub fn get_raw_areas() -> Result<Vec<RawArea>, reqwest::Error> {
+        get_data_sheet(include_str!("./CPI-AREAS.txt"))
     }
 
     #[derive(Deserialize)]
@@ -156,8 +150,8 @@ mod raw {
         pub item_name: String,
     }
 
-    pub async fn get_raw_items() -> Result<Vec<RawItem>, reqwest::Error> {
-        get_data_sheet("https://download.bls.gov/pub/time.series/ap/ap.item").await
+    pub fn get_raw_items() -> Result<Vec<RawItem>, reqwest::Error> {
+        get_data_sheet(include_str!("./CPI-ITEMS.txt"))
     }
 
     #[derive(Deserialize)]
@@ -185,14 +179,12 @@ mod raw {
         }
     }
 
-    pub async fn get_current_raw_series_entries() -> Result<Vec<RawSeriesEntry>, reqwest::Error> {
-        get_data_sheet("https://download.bls.gov/pub/time.series/ap/ap.data.0.Current").await
+    pub fn get_current_raw_series_entries() -> Result<Vec<RawSeriesEntry>, reqwest::Error> {
+        get_data_sheet(include_str!("./CPI-TIME-SERIES.txt"))
     }
 
-    async fn get_data_sheet<'de, T: Deserialize<'de>>(url: &str) -> Result<Vec<T>, reqwest::Error> {
-        let resp = reqwest::get(url).await?.text().await?;
-
-        let mut line_iter = resp.split('\n');
+    fn get_data_sheet<'de, T: Deserialize<'de>>(file_data: &str) -> Result<Vec<T>, reqwest::Error> {
+        let mut line_iter = file_data.split('\n');
         let column_names: Vec<&str> = line_iter
             .next()
             .unwrap()

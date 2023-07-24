@@ -139,9 +139,9 @@ fn bpi_items_handler(
 }
 
 #[rocket::launch]
-async fn rocket() -> _ {
+fn rocket() -> _ {
     println!("Building BPI index...");
-    let bpi_engine = bpi::BPIEngine::new().await;
+    let bpi_engine = bpi::BPIEngine::new();
     println!(
         "BPI index complete! Found {} items across {} areas.",
         bpi_engine.get_items().len(),

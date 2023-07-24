@@ -12,7 +12,7 @@ pub struct BTCPriceHistory {
 }
 
 impl BTCPriceHistory {
-    pub async fn new() -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         let mut csv_price_by_date = HashMap::new();
         let mut rdr = csv::Reader::from_reader(include_bytes!("./BTC-USD.csv") as &[u8]);
         for result in rdr.deserialize() {

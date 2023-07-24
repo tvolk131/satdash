@@ -14,10 +14,10 @@ pub struct CpiQueryEngine {
 }
 
 impl CpiQueryEngine {
-    pub async fn new() -> Self {
+    pub fn new() -> Self {
         let mut series_entries_by_item_and_area_code = HashMap::new();
 
-        for series_entry in get_current_series_entries().await.unwrap() {
+        for series_entry in get_current_series_entries().unwrap() {
             let item_and_area_code_key = (
                 series_entry.get_item_code().clone(),
                 series_entry.get_area_code().clone(),
@@ -55,8 +55,8 @@ impl CpiQueryEngine {
         }
 
         Self {
-            areas: get_areas().await.unwrap(),
-            items: get_items().await.unwrap(),
+            areas: get_areas().unwrap(),
+            items: get_items().unwrap(),
             series_by_item_and_area_code: series_entries_by_item_and_area_code
                 .into_iter()
                 .map(|(key, series_entries)| {
