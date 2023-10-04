@@ -194,3 +194,108 @@ export const getNextHalvingData =
 
   return {blockHeight: nextHalvingHeight, blockReward: nextBlockReward};
 };
+
+// Estimated world population at various block heights going back to the genesis
+// block. Block heights are for roughly the beginning of each calendar year.
+// Population estimates are for the year as a whole. Sorted by block height
+// because we'll be using binary search to find the closest block height to the
+// current block height.
+const worldPopulationAtBlockHeights: {
+  blockHeight: number;
+  population: number;
+}[] = [
+  {blockHeight: 1, population: 6.898}, // January 2009.
+  {blockHeight: 33000, population: 6.985}, // January 2010.
+  {blockHeight: 101000, population: 7.073}, // January 2011.
+  {blockHeight: 161000, population: 7.161}, // January 2012.
+  {blockHeight: 216000, population: 7.250}, // January 2013.
+  {blockHeight: 279000, population: 7.339}, // January 2014.
+  {blockHeight: 338000, population: 7.426}, // January 2015.
+  {blockHeight: 392000, population: 7.513}, // January 2016.
+  {blockHeight: 447000, population: 7.599}, // January 2017.
+  {blockHeight: 503000, population: 7.683}, // January 2018.
+  {blockHeight: 557000, population: 7.764}, // January 2019.
+  {blockHeight: 612000, population: 7.840}, // January 2020.
+  {blockHeight: 665000, population: 7.909}, // January 2021.
+  {blockHeight: 718000, population: 7.975}, // January 2022.
+  {blockHeight: 771000, population: 8.045} // January 2023.
+].sort((a, b) => a.blockHeight - b.blockHeight);
+
+const estimatedFuturePopulationGrowthRateMultiplier = 1.0088;
+
+const estimatedBlocksPerYear = 210000 / 4;
+
+// Estimate the world population at the given block height using linear
+// interpolation between the closest two known block heights, or extrapolation
+// if the block height is beyond the last known block height.
+// TODO - Pull data from an API or use the block height to calculate a more
+// accurate estimate.
+export const getEstimatedWorldPopulationBillionsAtBlockHeight = (
+  blockHeight: number
+) => {
+  return truncateNumber(
+    getEstimatedWorldPopulationBillionsAtBlockHeightInternal(blockHeight), 3
+  );
+};
+
+const getEstimatedWorldPopulationBillionsAtBlockHeightInternal = (
+  blockHeight: number
+): number => {
+  // Zero or negative block height doesn't make sense.
+  if (blockHeight < 1) {
+    return -1;
+  }
+
+  // If the block height is before the first known block height, return the
+  // population at the first known block height.
+  if (blockHeight <= worldPopulationAtBlockHeights[0].blockHeight) {
+    return worldPopulationAtBlockHeights[0].population;
+  }
+
+  // If the block height is after the last known block height, extrapolate the
+  // population using the last known population and the estimated future
+  // population growth rate multiplier.
+  if (
+    blockHeight >=
+    worldPopulationAtBlockHeights[worldPopulationAtBlockHeights.length - 1]
+      .blockHeight
+  ) {
+    return (
+      worldPopulationAtBlockHeights[worldPopulationAtBlockHeights.length - 1]
+        .population *
+      estimatedFuturePopulationGrowthRateMultiplier **
+        ((blockHeight -
+          worldPopulationAtBlockHeights[
+            worldPopulationAtBlockHeights.length - 1]
+            .blockHeight) / estimatedBlocksPerYear)
+    );
+  }
+
+  // Otherwise, find the closest two known block heights and interpolate the
+  // population between them.
+  for (let i = 0; i < worldPopulationAtBlockHeights.length - 1; i++) {
+    if (
+      blockHeight >= worldPopulationAtBlockHeights[i].blockHeight &&
+      blockHeight < worldPopulationAtBlockHeights[i + 1].blockHeight
+    ) {
+      const blockHeightDifference =
+        worldPopulationAtBlockHeights[i + 1].blockHeight -
+        worldPopulationAtBlockHeights[i].blockHeight;
+      const populationDifference =
+        worldPopulationAtBlockHeights[i + 1].population -
+        worldPopulationAtBlockHeights[i].population;
+      const blockHeightDifferenceFromStart =
+        blockHeight - worldPopulationAtBlockHeights[i].blockHeight;
+      const populationDifferenceFromStart =
+        (blockHeightDifferenceFromStart / blockHeightDifference) *
+        populationDifference;
+      return (
+        worldPopulationAtBlockHeights[i].population +
+        populationDifferenceFromStart
+      );
+    }
+  }
+
+  // If we get here, something went wrong.
+  return -1;
+};

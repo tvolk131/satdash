@@ -1,6 +1,9 @@
 import * as React from 'react';
+import {
+  getEstimatedWorldPopulationBillionsAtBlockHeight,
+  getMinedBitcoinAmountFromBlockHeight
+} from '../helper';
 import {SimpleWidget} from './simpleWidget';
-import {getMinedBitcoinAmountFromBlockHeight} from '../helper';
 
 interface WorldPopulationWidgetProps {
   blockHeight: number,
@@ -9,10 +12,10 @@ interface WorldPopulationWidgetProps {
 
 export const WorldPopulationWidget = (props: WorldPopulationWidgetProps) => {
   const coinsMined = getMinedBitcoinAmountFromBlockHeight(props.blockHeight);
-  // TODO - Pull this value from an API or use the block height to calculate
-  // an estimate.
-  const worldPopulation = 7.888 * 10 ** 9;
-  const bitcoinPerPerson = coinsMined.floorDivide(worldPopulation);
+  const worldPopulationBillions =
+    getEstimatedWorldPopulationBillionsAtBlockHeight(props.blockHeight);
+  const bitcoinPerPerson = coinsMined.floorDivide(
+    worldPopulationBillions * 10 ** 9);
   bitcoinPerPerson.getCoinAmountString();
 
   return (

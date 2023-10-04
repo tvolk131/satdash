@@ -2,6 +2,7 @@ import {
   formatNumber,
   getBlockRewardFromBlockHeight,
   getDurationEstimateFromBlockCount,
+  getEstimatedWorldPopulationBillionsAtBlockHeight,
   getMinedBitcoinAmountFromBlockHeight,
   getNextHalvingData,
   truncateNumber
@@ -221,5 +222,38 @@ describe('getNextHalvingData', () => {
       blockHeight: 1050000,
       blockReward: new BitcoinAmount({coins: 1, sats: 56250000})
     });
+  });
+});
+
+describe('getEstimatedWorldPopulationAtBlockHeight', () => {
+  it('returns correct value', () => {
+    // Zero block height is not a valid input.
+    expect(getEstimatedWorldPopulationBillionsAtBlockHeight(0)).toEqual(-1);
+
+    // Negative block height is not a valid input.
+    expect(getEstimatedWorldPopulationBillionsAtBlockHeight(-1)).toEqual(-1);
+
+    // Genesis block works.
+    expect(getEstimatedWorldPopulationBillionsAtBlockHeight(1)).toEqual(6.898);
+
+    // Exact block height entry works.
+    expect(getEstimatedWorldPopulationBillionsAtBlockHeight(392000))
+      .toEqual(7.513);
+
+    // Uses linear interpolation between two known block heights.
+    expect(getEstimatedWorldPopulationBillionsAtBlockHeight(365000))
+      .toEqual(7.469);
+
+    // Last known block height works.
+    expect(getEstimatedWorldPopulationBillionsAtBlockHeight(771000))
+      .toEqual(8.045);
+
+    // Extrapolates beyond last known block height.
+    expect(getEstimatedWorldPopulationBillionsAtBlockHeight(771000 + 52500))
+      .toEqual(truncateNumber(8.045 * 1.0088, 3));
+
+    // Extrapolates far beyond last known block height.
+    expect(getEstimatedWorldPopulationBillionsAtBlockHeight(10000000))
+      .toEqual(37.534);
   });
 });
